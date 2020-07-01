@@ -1,7 +1,7 @@
-import Taro, { Component, Config } from '@tarojs/taro'
-import Index from './pages/index'
+import Taro, { Component, Config } from "@tarojs/taro";
+import Index from "./pages/home/index";
 
-import './app.styl'
+import "./app.scss";
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -10,7 +10,6 @@ import './app.styl'
 // }
 
 class App extends Component {
-
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -19,37 +18,53 @@ class App extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
   config: Config = {
-    pages: [
-      'pages/index/index'
-    ],
+    pages: ["pages/home/index", "pages/member/index"],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      backgroundTextStyle: "light",
+      navigationBarBackgroundColor: "#fff",
+      navigationBarTitleText: "WeChat",
+      navigationBarTextStyle: "black",
     },
-    cloud: true
-  }
+    tabBar: {
+      color: "#65666B",
+      selectedColor: "#2F7DD5",
+      backgroundColor: "#fff",
+      list: [
+        {
+          iconPath: "assets/tabs/index_blur.png",
+          selectedIconPath: "assets/tabs/index_focus.png",
+          pagePath: "pages/home/index",
+          text: "首页",
+        },
+        {
+          iconPath: "assets/tabs/my_blur.png",
+          selectedIconPath: "assets/tabs/my_focus.png",
+          pagePath: "pages/member/index",
+          text: "我的",
+        },
+      ],
+    },
+    debug: process.env.NODE_ENV === "development",
+    cloud: true,
+  };
 
-  componentDidMount () {
-    if (process.env.TARO_ENV === 'weapp') {
-      Taro.cloud.init()
+  componentDidMount() {
+    if (process.env.TARO_ENV === "weapp") {
+      Taro.cloud.init();
     }
   }
 
-  componentDidShow () {}
+  componentDidShow() {}
 
-  componentDidHide () {}
+  componentDidHide() {}
 
-  componentDidCatchError () {}
+  componentDidCatchError() {}
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
-  render () {
-    return (
-      <Index />
-    )
+  render() {
+    return <Index />;
   }
 }
 
-Taro.render(<App />, document.getElementById('app'))
+Taro.render(<App />, document.getElementById("app"));

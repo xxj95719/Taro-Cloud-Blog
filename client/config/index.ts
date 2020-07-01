@@ -1,6 +1,8 @@
+import path from 'path';
+
 const config = {
   projectName: 'taro-cloud-blog',
-  date: '2020-6-30',
+  date: '2020-7-1',
   designWidth: 750,
   deviceRatio: {
     '640': 2.34 / 2,
@@ -21,16 +23,16 @@ const config = {
       'transform-class-properties',
       'transform-object-rest-spread',
       ['transform-runtime', {
-          helpers: false,
-          polyfill: false,
-          regenerator: true,
-          moduleName: 'babel-runtime'
-        }
+        helpers: false,
+        polyfill: false,
+        regenerator: true,
+        moduleName: 'babel-runtime'
+      }
       ]
     ]
   },
   plugins: [
-    '@tarojs/plugin-stylus',
+    '@tarojs/plugin-sass',
     '@tarojs/plugin-terser'
   ],
   defineConstants: {
@@ -71,6 +73,7 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    esnextModules: ['taro-ui'],
     postcss: {
       autoprefixer: {
         enable: true,
@@ -83,14 +86,18 @@ const config = {
         }
       },
       cssModules: {
-        enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+        enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true
         config: {
           namingPattern: 'module', // 转换模式，取值为 global/module
           generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
       }
     }
-  }
+  },
+  alias: {
+    '@': path.resolve(__dirname, '..', 'src'),
+    '_c': path.resolve(__dirname, '..', 'src/components'),
+  },
 }
 
 module.exports = function (merge) {

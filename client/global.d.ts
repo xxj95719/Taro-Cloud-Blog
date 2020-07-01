@@ -8,6 +8,7 @@ declare module "*.less";
 declare module "*.scss";
 declare module "*.sass";
 declare module "*.styl";
+declare module "taro-ui";
 
 // @ts-ignore
 declare const process: {
