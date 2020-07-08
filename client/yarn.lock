@@ -9217,7 +9217,14 @@ tar@^6.0.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-taro-ui@^2.3.4:
+taro-parse@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.npm.taobao.org/taro-parse/download/taro-parse-1.1.5.tgz#8fd03f50ce2890440101d553fbcd5d8fbac1536b"
+  integrity sha1-j9A/UM4okEQBAdVT+81dj7rBU2s=
+  dependencies:
+    babel-runtime "^6.26.0"
+
+taro-ui@2.3.4:
   version "2.3.4"
   resolved "https://registry.npm.taobao.org/taro-ui/download/taro-ui-2.3.4.tgz#a7a2cdd67b2b4a49d10c351d89def4d28b9bb192"
   integrity sha1-p6LN1nsrSknRDDUdid700oubsZI=

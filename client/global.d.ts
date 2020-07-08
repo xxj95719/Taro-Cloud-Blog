@@ -9,6 +9,8 @@ declare module "*.scss";
 declare module "*.sass";
 declare module "*.styl";
 declare module "taro-ui";
+declare module "taro-parse";
+
 
 // @ts-ignore
 declare const process: {

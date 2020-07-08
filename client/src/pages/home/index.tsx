@@ -1,36 +1,59 @@
-import Taro, { Component, Config } from "@tarojs/taro";
-import { View, Text } from "@tarojs/components";
+import Taro, { FC, useState, useEffect } from "@tarojs/taro";
+import { ScrollView } from "@tarojs/components";
 import "./index.scss";
 
-import Card from "_c/card/index";
+import XCard from "@/components/XCard/index";
+import { dbGet } from "@/utils/CRUD";
 
-export default class Home extends Component {
-  /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-  config: Config = {
-    navigationBarTitleText: "首页"
+type ArticleList = Array<{
+  title: string;
+  desc: string;
+  content: string;
+  sortType: number;
+  creatTime: Date;
+  updateTime: Date;
+  _id: string;
+}>;
+
+const Home: FC = () => {
+  const [articleList, setArticleList] = useState<ArticleList>([]);
+  useEffect(() => {
+    getArticleList();
+    getArticleSortTypeList();
+  }, []);
+
+  const getArticleList = async () => {
+    const data = await dbGet({ collection: "article", skip: 0, limit: 10 });
+
+    console.log(data);
+    setArticleList(data as ArticleList);
   };
 
-  componentWillMount() {}
+  const getArticleSortTypeList = async () => {
+    const data = await dbGet({
+      collection: "article_sort_type",
+      skip: 0,
+      limit: 10
+    });
+  };
+  const onRefresherRefresh = async () => {};
+  return (
+    <ScrollView
+      className="scrollview"
+      scrollY
+      enableBackToTop
+      scrollAnchoring
+      refresherEnabled
+      onRefresherRefresh={onRefresherRefresh}
+    >
+      {articleList.map(item => (
+        <XCard item={item} key={item._id} />
+      ))}
+    </ScrollView>
+  );
+};
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
-  componentDidShow() {}
-
-  componentDidHide() {}
-
-  render() {
-    return (
-      <View className="index">
-        <Card />
-      </View>
-    );
-  }
-}
+Home.config = {
+  navigationBarTitleText: "首页"
+};
+export default Home;
