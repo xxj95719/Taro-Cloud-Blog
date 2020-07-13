@@ -1,50 +1,96 @@
 import Taro, { FC, useState, useEffect } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
+import { AtLoadMore } from 'taro-ui';
 import './index.scss';
 
 import XCard from '@/components/XCard/index';
 import { dbGet } from '@/utils/CRUD';
 
 type ArticleList = Array<{
+	_id: string;
 	title: string;
 	desc: string;
 	content: string;
 	sortType: number;
+	sortTypeName?: string;
 	creatTime: Date;
 	updateTime: Date;
-	_id: string;
 }>;
 
+interface SortTypeList {
+	_id: string;
+	sortType: number;
+	sortTypeName: string;
+}
+
 const Home: FC = () => {
-	const [ articleList, setArticleList ] = useState<ArticleList>([]);
-	useEffect(() => {
-		getArticleList();
-		getArticleSortTypeList();
-	}, []);
+	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
 
+	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
+
+	const [ sortTypeList, setSortTypeList ] = useState<Array<SortTypeList>>([]); // 标签分类
+
+	const [ status, setStatus ] = useState<string>('more'); // 状态
+
+	useEffect(
+		() => {
+			getArticleList();
+		},
+		[ skip ]
+	);
 	const getArticleList = async () => {
-		const data = await dbGet({ collection: 'article', skip: 0, limit: 10 });
+		let res: Array<SortTypeList> = [];
+		if (!sortTypeList.length) {
+			res = await getArticleSortTypeList();
+			setSortTypeList(res);
+		}
 
-		setArticleList(data as ArticleList);
+		const data = await dbGet({ collection: 'article', skip, limit: 10 });
+
+		let mapData = data as ArticleList;
+
+		mapData = mapData.map((item) => {
+			let fObj: {
+				_id?: string;
+				sortType?: number;
+				sortTypeName: string;
+			} = res.find((jtem) => jtem.sortType === item.sortType) || { sortTypeName: '' };
+			item.sortTypeName = fObj.sortTypeName;
+
+			return item;
+		});
+
+		if (mapData.length) {
+			setStatus('more');
+
+			mapData = articleList.concat(mapData);
+		} else {
+			setStatus('noMore');
+
+			mapData = articleList;
+		}
+
+		setArticleList(mapData);
 	};
 
 	const getArticleSortTypeList = async () => {
 		const data = await dbGet({
 			collection: 'article_sort_type',
-			skip: 0,
+			skip,
 			limit: 10
 		});
+		return data as Array<SortTypeList>;
 	};
-	const onRefresherRefresh = async () => {};
+
+	const onClickLoadMore = async () => {
+		setStatus('loading');
+		setSkip(articleList.length || 0);
+	};
 	return (
-		<ScrollView
-			className='scrollview'
-			scrollY
-			enableBackToTop
-			scrollAnchoring
-			refresherEnabled
-			onRefresherRefresh={onRefresherRefresh}>
+		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
 			{articleList.map((item) => <XCard item={item} key={item._id} />)}
+
+			<AtLoadMore onClick={onClickLoadMore} status={status} />
 		</ScrollView>
 	);
 };
