@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-13 14:23:24
+ * @LastEditTime: 2020-07-13 14:36:31
  */
 
 import Taro from "@tarojs/taro";
@@ -36,7 +36,7 @@ export async function dbAdd (config: AddConfig) {
   try {
     const res = await configCollection
       .add({ data: config.data })
-    console.log(`${config.collection}数据add : ${res}`)
+    console.log(`${config.collection}数据add : `, res)
 
   } catch (error) {
     Taro.showToast({
@@ -55,7 +55,7 @@ export async function dbDelete (config: DelConfig) {
     const res = await configCollection
       .doc(config._id).remove({});
 
-    console.log(`${config.collection}数据delete : ${res}`)
+    console.log(`${config.collection}数据delete : `, res)
 
   } catch (error) {
     Taro.showToast({
@@ -73,7 +73,7 @@ export async function dbUpdate (config: UpdateConfig) {
     const res = await configCollection
       .doc(config._id).update({ data: config.data });
 
-    console.log(`${config.collection}数据update : ${res}`)
+    console.log(`${config.collection}数据update : `, res)
 
   } catch (error) {
     Taro.showToast({
@@ -92,7 +92,7 @@ export async function dbGet (config: GetConfig) {
       .skip(config.skip)
       .limit(config.limit)
       .get();
-    console.log(`${config.collection}数据get : ${data}`)
+    console.log(`${config.collection}数据get : `, data)
 
 
     return data

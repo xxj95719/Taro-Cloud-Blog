@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 16:21:57
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-08 16:50:44
+ * @LastEditTime: 2020-07-13 14:35:22
  */
 
 const filters = {
@@ -19,7 +19,6 @@ const filters = {
     const m = newDate.getMinutes();
     // const s = date.getSeconds(); // 秒
     const dateString = Y + M + D + h + m;
-    console.log('dateString', dateString); // > dateString 2020-01-10 18:52
     return dateString;
   }
 }

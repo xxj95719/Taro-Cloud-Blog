@@ -28,18 +28,18 @@ class App extends Component {
 		},
 		tabBar: {
 			color: '#65666B',
-			selectedColor: '#2F7DD5',
+			selectedColor: '#F15E19',
 			backgroundColor: '#fff',
 			list: [
 				{
-					iconPath: 'assets/tabs/index_blur.png',
-					selectedIconPath: 'assets/tabs/index_focus.png',
+					iconPath: 'assets/img/tabs/blogger_blur.png',
+					selectedIconPath: 'assets/img/tabs/blogger_focus.png',
 					pagePath: 'pages/home/index',
 					text: '首页'
 				},
 				{
-					iconPath: 'assets/tabs/my_blur.png',
-					selectedIconPath: 'assets/tabs/my_focus.png',
+					iconPath: 'assets/img/tabs/my_blur.png',
+					selectedIconPath: 'assets/img/tabs/my_focus.png',
 					pagePath: 'pages/member/index',
 					text: '我的'
 				}
