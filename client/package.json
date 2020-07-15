@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@tarojs/mini-runner": "2.2.9",
-    "@tarojs/plugin-sass": "2.2.9",
+    "@tarojs/plugin-sass": "^2.2.10",
     "@tarojs/plugin-terser": "2.2.9",
     "@tarojs/webpack-runner": "2.2.9",
     "@types/react": "^16.4.6",

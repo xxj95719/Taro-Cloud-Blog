@@ -5,5 +5,9 @@
 @import "~taro-ui/dist/style/components/tag.scss";
 @import "~taro-ui/dist/style/components/load-more.scss";
 @import "~taro-ui/dist/style/components/activity-indicator.scss";
+@import "~taro-ui/dist/style/components/list.scss";
+@import "~taro-ui/dist/style/components/icon.scss";
 // markdown插件
-@import '~taro-parse/dist/style/main.scss'
+@import "~taro-parse/dist/style/main.scss";
+//引入阿里图标库
+@import "./assets/font/iconfont.scss";

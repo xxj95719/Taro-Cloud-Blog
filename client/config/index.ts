@@ -35,6 +35,9 @@ const config = {
     '@tarojs/plugin-sass',
     '@tarojs/plugin-terser'
   ],
+  sass: {
+    resource: path.resolve(__dirname, '..', 'src/assets/css/CONST.scss'),
+  },
   defineConstants: {
   },
   mini: {
