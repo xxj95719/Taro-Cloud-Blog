@@ -1,8 +1,8 @@
 import Taro, { FC, memo } from '@tarojs/taro';
+import { View } from '@tarojs/components';
 import { AtCard } from 'taro-ui';
-// import TaroParser from "taro-parse";
 import filters from '@/utils/filters';
-
+import './index.scss';
 type Props = {
 	item: {
 		title: string;
@@ -12,8 +12,9 @@ type Props = {
 		creatTime: Date;
 		updateTime: Date;
 	};
+	onGoToDetail: void;
 };
-const XCard: FC<Props> = ({ item }) => {
+const XCard: FC<Props> = ({ item, onGoToDetail }) => {
 	const x_card__extra = {
 		maxWidth: Taro.pxTransform(600),
 		fontSize: '12px',
@@ -21,15 +22,17 @@ const XCard: FC<Props> = ({ item }) => {
 	};
 
 	return (
-		<AtCard
-			extraStyle={x_card__extra}
-			note={`更新时间：${filters.formateDate(item.updateTime, '/')}`}
-			extra={item.sortTypeName}
-			title={item.title}
-			thumb='http://www.logoquan.com/upload/list/20180421/logoquan15259400209.PNG'>
-			{item.desc}
-			{/* <TaroParser type="markdown" theme="dark" content={item.content} /> */}
-		</AtCard>
+		<View className='x-cart'>
+			<AtCard
+				extraStyle={x_card__extra}
+				note={`更新时间：${filters.formateDate(item.updateTime, '/')}`}
+				extra={item.sortTypeName}
+				title={item.title}
+				thumb='http://www.logoquan.com/upload/list/20180421/logoquan15259400209.PNG'
+				onClick={onGoToDetail}>
+				{item.desc}
+			</AtCard>
+		</View>
 	);
 };
 

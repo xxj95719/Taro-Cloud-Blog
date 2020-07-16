@@ -1,0 +1,28 @@
+.scrollview {
+  min-height: 100vh;
+  overflow: auto;
+  background-color: $gray;
+
+  .user-box {
+    display: flex;
+    align-items: center;
+
+    padding: 36px;
+    background-color: $white;
+
+
+    &--text {
+      padding-left: 30px;
+      font-size: 24px;
+      color: $gray6;
+
+      &__name {
+        font-size: 36px;
+        font-weight: 500;
+        color: $orange;
+
+      }
+    }
+  }
+
+}
