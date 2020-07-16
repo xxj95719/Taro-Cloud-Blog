@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-13 14:36:31
+ * @LastEditTime: 2020-07-16 17:59:43
  */
 
 import Taro from "@tarojs/taro";
@@ -26,7 +26,8 @@ interface UpdateConfig extends Collection {
 }
 interface GetConfig extends Collection {
   skip: number; // 查：起始位置
-  limit: number; // 查：限制条数
+  limit?: number; // 查：限制条数
+  where: object; // 查：条件
 }
 
 
@@ -90,7 +91,8 @@ export async function dbGet (config: GetConfig) {
   try {
     const { data } = await configCollection
       .skip(config.skip)
-      .limit(config.limit)
+      .limit(config.limit || 10)
+      .where(config.where || '')
       .get();
     console.log(`${config.collection}数据get : `, data)
 

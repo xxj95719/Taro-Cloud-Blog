@@ -3,4 +3,9 @@
   right: 30px;
   top: 40px;
   color: $green;
+
+  &__active {
+    background-color: $green;
+    color: $white;
+  }
 }
