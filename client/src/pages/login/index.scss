@@ -1,0 +1,33 @@
+.login {
+  min-height: 100vh;
+  background-color: $gray;
+  padding-top: 30px;
+
+  &-box {
+    min-height: 60vh;
+    padding: 40px;
+    margin: 0 20px;
+    background-color: $white;
+    border-radius: 10px;
+    text-align: center;
+
+    &--logo {
+      width: 536px;
+      margin: 100px 0;
+    }
+
+    &--btn {
+      border-radius: 50px;
+      color: $white;
+      background-color: $wechat-green;
+      margin-bottom: 50px;
+    }
+
+    &--back {
+      padding: 40px;
+      font-size: 24px;
+      color: $blue;
+    }
+  }
+
+}

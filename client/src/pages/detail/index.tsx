@@ -1,7 +1,10 @@
 import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import TaroParser from 'taro-parse';
+import { AtButton } from 'taro-ui';
+import { isLogin } from '@/utils';
 import filters from '@/utils/filters';
+
 import './index.scss';
 
 import { dbGet } from '@/utils/CRUD';
@@ -30,15 +33,24 @@ const BlogDetail: FC = () => {
 		},
 		[ scope ]
 	);
-
+	const collect = async () => {
+		let bool = await isLogin();
+		if (bool) {
+		} else {
+			Taro.navigateTo({ url: `/pages/login/index` });
+		}
+	};
 	if (!detail) return null;
 	return (
 		<View className='at-article'>
 			<View className='at-article__h1'>{detail.title}</View>
 			<View className='at-article__info'>
 				{`${filters.formateDate(detail.updateTime, '-')}`}
-				<Text className='at-article__name'>🐔哥</Text>
+				<Text className='at-article__name'>{`        🐔哥`}</Text>
 			</View>
+			<AtButton full={false} className='sava-btn' onClick={collect}>
+				+ 收藏
+			</AtButton>
 			<View className='at-article__content'>
 				<Image className='at-article__img' src='https://jdc.jd.com/img/400x400' mode='widthFix' />
 
