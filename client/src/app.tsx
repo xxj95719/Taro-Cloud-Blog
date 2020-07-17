@@ -20,9 +20,9 @@ class App extends Component {
 		pages: [ 'pages/home/index', 'pages/login/index', 'pages/member/index', 'pages/detail/index' ],
 		window: {
 			backgroundTextStyle: 'light',
-			navigationBarBackgroundColor: '#fff',
-			navigationBarTitleText: 'WeChat',
-			navigationBarTextStyle: 'black'
+			navigationBarTextStyle: 'white',
+			navigationBarBackgroundColor: '#F15E19',
+			navigationBarTitleText: 'WeChat'
 		},
 		tabBar: {
 			color: '#65666B',

@@ -16,4 +16,7 @@ const Exit: FC<Props> = ({ onExit }) => {
 	);
 };
 
+Exit.defaultProps = {
+	onExit: () => {}
+};
 export default Exit;

@@ -64,6 +64,7 @@ const Login: FC = () => {
 
 Login.config = {
 	navigationBarTitleText: '一键登录',
+	navigationBarTextStyle: 'black',
 	navigationBarBackgroundColor: '#f8f8f8'
 };
 export default Login;

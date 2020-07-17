@@ -12,7 +12,7 @@ interface Props {
 	};
 }
 
-const User: FC<Props> = ({ userInfo = { avatarUrl: '', nickName: '登录' } }) => {
+const User: FC<Props> = ({ userInfo }) => {
 	const login = async () => {
 		let bool = await isLogin();
 		if (!bool) {
@@ -28,4 +28,10 @@ const User: FC<Props> = ({ userInfo = { avatarUrl: '', nickName: '登录' } }) =
 	);
 };
 
+User.defaultProps = {
+	userInfo: {
+		avatarUrl: '',
+		nickName: '登录'
+	}
+};
 export default User;

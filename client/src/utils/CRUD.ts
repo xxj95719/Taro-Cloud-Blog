@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-16 17:59:43
+ * @LastEditTime: 2020-07-17 16:45:48
  */
 
 import Taro from "@tarojs/taro";
@@ -27,7 +27,7 @@ interface UpdateConfig extends Collection {
 interface GetConfig extends Collection {
   skip: number; // 查：起始位置
   limit?: number; // 查：限制条数
-  where: object; // 查：条件
+  where?: object; // 查：条件
 }
 
 
@@ -89,15 +89,32 @@ export async function dbUpdate (config: UpdateConfig) {
 export async function dbGet (config: GetConfig) {
   const configCollection = db.collection(config.collection);
   try {
-    const { data } = await configCollection
-      .skip(config.skip)
-      .limit(config.limit || 10)
-      .where(config.where || '')
-      .get();
-    console.log(`${config.collection}数据get : `, data)
+    let res
+    if (config.where && config.limit) {
+      res = await configCollection
+        .skip(config.skip)
+        .limit(config.limit)
+        .where(config.where)
+        .get();
+    } else if (config.limit) {
+      res = await configCollection
+        .skip(config.skip)
+        .limit(config.limit)
+        .get();
+    } else if (config.where) {
+      res = await configCollection
+        .skip(config.skip)
+        .where(config.where)
+        .get();
+    } else {
+      res = await configCollection
+        .get();
+    }
+
+    console.log(`${config.collection}数据get : `, res.data)
 
 
-    return data
+    return res.data
   } catch (error) {
     Taro.showToast({
       title: '数据查询出错',

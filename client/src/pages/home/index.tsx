@@ -10,6 +10,7 @@ type ArticleList = Array<{
 	_id: string;
 	title: string;
 	desc: string;
+	imgUrl: string;
 	content: string;
 	sortType: number;
 	sortTypeName?: string;

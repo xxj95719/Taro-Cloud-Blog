@@ -1,3 +1,58 @@
 .x-cart {
-  margin: 10px 0;
+  background-color: $white;
+  border-bottom: 1px solid $gray;
+  padding: 40px;
+
+  &-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+
+    &--head {
+      display: flex;
+      align-items: center;
+
+      &__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        line-height: 40px;
+      }
+
+      &__name {
+        font-size: 22px;
+        padding-left: 15px;
+      }
+    }
+
+
+  }
+
+  &-tag {
+    font-size: 24px;
+    color: $gray6;
+  }
+
+  &-box {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    &--title {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    &--desc {
+      padding: 30px 0;
+      font-size: 24px;
+      color: $gray6;
+    }
+
+    &--img {
+      width: 150px;
+      height: 150px;
+    }
+  }
 }
