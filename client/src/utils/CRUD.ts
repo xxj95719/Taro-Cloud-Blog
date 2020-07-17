@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-17 16:45:48
+ * @LastEditTime: 2020-07-17 18:42:10
  */
 
 import Taro from "@tarojs/taro";
@@ -123,4 +123,6 @@ export async function dbGet (config: GetConfig) {
     })
     console.error(error)
   }
-} 
+}
+
+

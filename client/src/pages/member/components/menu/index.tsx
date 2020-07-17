@@ -6,6 +6,9 @@ import './index.scss';
 const Menu: FC = () => {
 	useEffect(() => {}, []);
 
+	const onGoToList = (title) => {
+		Taro.navigateTo({ url: `/pages/list/index?title=${title}` });
+	};
 	return (
 		<View className='menu-box'>
 			<AtList hasBorder={false}>
@@ -19,6 +22,7 @@ const Menu: FC = () => {
 						value: 'start'
 					}}
 					hasBorder={false}
+					onClick={onGoToList.bind(this, '收藏集')}
 				/>
 				<AtListItem
 					title='阅读过的文章'
@@ -30,6 +34,7 @@ const Menu: FC = () => {
 						value: 'eye'
 					}}
 					hasBorder={false}
+					onClick={onGoToList.bind(this, '阅读过的文章')}
 				/>
 
 				<AtListItem

@@ -17,7 +17,13 @@ class App extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
 	config: Config = {
-		pages: [ 'pages/home/index', 'pages/login/index', 'pages/member/index', 'pages/detail/index' ],
+		pages: [
+			'pages/home/index',
+			'pages/login/index',
+			'pages/member/index',
+			'pages/list/index',
+			'pages/detail/index'
+		],
 		window: {
 			backgroundTextStyle: 'light',
 			navigationBarTextStyle: 'white',
