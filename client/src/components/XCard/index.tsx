@@ -6,7 +6,7 @@ type Props = {
 	item: {
 		title: string;
 		desc: string;
-		imgUrl: string;
+		fileID: string;
 		sortType: number;
 		sortTypeName?: string;
 		creatTime: Date;
@@ -36,7 +36,7 @@ const XCard: FC<Props> = ({ item, onGoToDetail }) => {
 						<Text className='x-cart-box--desc'>{item.desc}</Text>
 					</View>
 				</View>
-				{item.imgUrl && <Image src={item.imgUrl} className='x-cart-box--img' mode='widthFix' />}
+				{item.fileID && <Image src={item.fileID} className='x-cart-box--img' mode='widthFix' />}
 			</View>
 		</View>
 	);
@@ -47,7 +47,7 @@ XCard.defaultProps = {
 	item: {
 		title: '',
 		desc: '',
-		imgUrl: '',
+		fileID: '',
 		sortType: 0,
 		sortTypeName: '',
 		creatTime: new Date(),
