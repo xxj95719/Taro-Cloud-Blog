@@ -7,6 +7,8 @@ import XCard from '@/components/XCard/index';
 
 import XEmpty from '@/components/XEmpty/index';
 
+import TabsPane from './components/tabsPane/index';
+
 import { dbGet } from '@/utils/CRUD';
 
 type ArticleList = Array<{
@@ -30,7 +32,11 @@ interface SortTypeList {
 const Home: FC = () => {
 	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
 
+	const [ sortType, setSortType ] = useState<number>(); // 数据位置标识
+
 	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
+
+	const [ sortTypeList, setSortTypeList ] = useState<any>([]); // 标签分类
 
 	const [ status, setStatus ] = useState<string>('more'); // 状态
 
@@ -40,13 +46,29 @@ const Home: FC = () => {
 		},
 		[ skip ]
 	);
+	useEffect(
+		() => {
+			getArticleList();
+		},
+		[ sortType ]
+	);
 	const getArticleList = async () => {
-		let res: Array<SortTypeList> = (await Taro.getStorageSync('sortTypeList')) || [];
+		let res: SortTypeList[] = (await Taro.getStorageSync('sortTypeList')) || [ {} ];
 		if (!res.length) {
 			res = await getArticleSortTypeList();
 			Taro.setStorageSync('sortTypeList', res);
+			setSortTypeList(res);
+		} else {
+			setSortTypeList(Taro.getStorageSync('sortTypeList'));
 		}
-		const data = await dbGet({ collection: 'article', skip, limit: 10 });
+		const data = await dbGet({
+			collection: 'article',
+			skip,
+			limit: 10,
+			where: {
+				sortType
+			}
+		});
 
 		let mapData = data as ArticleList;
 
@@ -84,21 +106,26 @@ const Home: FC = () => {
 		});
 		return data as Array<SortTypeList>;
 	};
-
+	const onClickTabsPane = async (sortType) => {
+		setSortType(sortType);
+		setSkip(0);
+		setStatus('more');
+	};
 	const onClickLoadMore = async () => {
 		setStatus('loading');
 		setSkip(articleList.length || 0);
 	};
 
 	const onGoToDetail = (item) => {
-		console.log(item);
 		Taro.navigateTo({
 			url: `/pages/detail/index?info=${JSON.stringify(item)}`
 		});
 	};
+
 	if (!articleList.length) return <XEmpty />;
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
+			<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
 			{articleList.map((item) => (
 				<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
 			))}
