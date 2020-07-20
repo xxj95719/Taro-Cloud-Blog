@@ -51,10 +51,14 @@ const List: FC = () => {
   }, [skip]);
   // 联表查询
   const getArticleList = async () => {
-    let res: Array<SortTypeList> = [];
-    if (!sortTypeList.length) {
+    let res: Array<SortTypeList> =
+      (await Taro.getStorageSync("sortTypeList")) || [];
+    if (!res.length) {
       res = await getArticleSortTypeList();
+      Taro.setStorageSync("sortTypeList", res);
       setSortTypeList(res);
+    } else {
+      setSortTypeList(Taro.getStorageSync("sortTypeList"));
     }
     const { result } = (await Taro.cloud.callFunction({
       name: "getCollectArtList"

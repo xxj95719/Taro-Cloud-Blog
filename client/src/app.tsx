@@ -22,6 +22,7 @@ class App extends Component {
 			'pages/login/index',
 			'pages/member/index',
 			'pages/list/index',
+			'pages/addOrEdit/index',
 			'pages/detail/index'
 		],
 		window: {

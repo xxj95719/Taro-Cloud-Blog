@@ -1,0 +1,44 @@
+.form {
+  padding: 20px 20px 100px;
+
+  .panel {
+    margin: 10px 0;
+
+    &__title {
+      position: relative;
+      margin-bottom: 20px;
+      padding-left: 20px;
+      color: rgb(106, 106, 119);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.5;
+
+      &:before {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        left: 4px;
+        top: 50%;
+        margin-top: -14px;
+        width: 4px;
+        height: 30px;
+        background-color: $orange;
+        border-radius: 1px;
+      }
+    }
+  }
+
+  &__content {
+    padding-top: 20px;
+  }
+
+  .submit-btn {
+    background-color: $orange;
+    border-color: $orange;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+  }
+}

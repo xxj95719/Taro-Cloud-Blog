@@ -5,6 +5,7 @@ cloud.init()
 const db = cloud.database()
 
 exports.main = async (event) => {
+  const wxContext = cloud.getWXContext()
 
   return await db.collection('collect_records').aggregate()
     .lookup({
@@ -14,7 +15,7 @@ exports.main = async (event) => {
       as: 'artInfo'
     })
     .match({
-      _openid: event.userInfo.openid
+      _openid: wxContext.OPENID
     })
     .end()
 }

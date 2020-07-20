@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-17 18:42:10
+ * @LastEditTime: 2020-07-20 14:08:51
  */
 
 import Taro from "@tarojs/taro";
@@ -32,13 +32,13 @@ interface GetConfig extends Collection {
 
 
 // 增
-export async function dbAdd (config: AddConfig) {
+export async function dbAdd (config: AddConfig): Promise<Boolean> {
   const configCollection = db.collection(config.collection);
   try {
     const res = await configCollection
       .add({ data: config.data })
     console.log(`${config.collection}数据add : `, res)
-
+    return true
   } catch (error) {
     Taro.showToast({
       title: '新增数据出错',
@@ -46,10 +46,11 @@ export async function dbAdd (config: AddConfig) {
       duration: 2000
     })
     console.error(error)
+    return false
   }
 }
 // 删（单条记录）
-export async function dbDelete (config: DelConfig) {
+export async function dbDelete (config: DelConfig): Promise<Boolean> {
   const configCollection = db.collection(config.collection);
   try {
     // 删除一条数据
@@ -57,6 +58,7 @@ export async function dbDelete (config: DelConfig) {
       .doc(config._id).remove({});
 
     console.log(`${config.collection}数据delete : `, res)
+    return true
 
   } catch (error) {
     Taro.showToast({
@@ -65,16 +67,19 @@ export async function dbDelete (config: DelConfig) {
       duration: 2000
     })
     console.error(error)
+    return false
+
   }
 }
 // 改（单条记录）
-export async function dbUpdate (config: UpdateConfig) {
+export async function dbUpdate (config: UpdateConfig): Promise<Boolean> {
   const configCollection = db.collection(config.collection);
   try {
     const res = await configCollection
       .doc(config._id).update({ data: config.data });
 
     console.log(`${config.collection}数据update : `, res)
+    return true
 
   } catch (error) {
     Taro.showToast({
@@ -83,6 +88,8 @@ export async function dbUpdate (config: UpdateConfig) {
       duration: 2000
     })
     console.error(error)
+    return false
+
   }
 }
 // 查
