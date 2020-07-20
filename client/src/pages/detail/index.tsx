@@ -1,13 +1,13 @@
 import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import TaroParser from 'taro-parse';
-import { AtButton } from 'taro-ui';
+import { AtButton, AtFab } from 'taro-ui';
 import { isLogin } from '@/utils';
 import filters from '@/utils/filters';
 
 import './index.scss';
 
-import { dbAdd, dbGet } from '@/utils/CRUD';
+import { dbAdd, dbGet, dbDelete } from '@/utils/CRUD';
 
 interface ArticleDetail {
 	_id: string;
@@ -29,9 +29,19 @@ const BlogDetail: FC = () => {
 
 	useEffect(
 		() => {
-			if (scope) {
-				setDetail(JSON.parse(scope.options.info));
-			}
+			(async function() {
+				if (scope) {
+					console.log(scope.options._id);
+					const data = await dbGet({
+						collection: 'article',
+						skip: 0,
+						where: {
+							_id: scope.options._id
+						}
+					});
+					setDetail(data[0]);
+				}
+			})();
 		},
 		[ scope ]
 	);
@@ -66,12 +76,23 @@ const BlogDetail: FC = () => {
 					collection: 'collect_records',
 					data: { articleId: detail._id }
 				});
-			} else {
+				setIsAlreadyCollect(true);
 				Taro.showToast({
-					title: '您已收藏过了',
-					icon: 'none',
-					duration: 2000
+					title: '收藏成功',
+					icon: 'success'
 				});
+			} else {
+				const userInfo = await Taro.getStorageSync('userInfo');
+
+				dbDelete({
+					collection: 'collect_records',
+					where: { _openid: userInfo.openId, articleId: detail._id }
+				});
+				Taro.showToast({
+					title: '取消成功',
+					icon: 'success'
+				});
+				setIsAlreadyCollect(false);
 			}
 		} else {
 			Taro.navigateTo({ url: `/pages/login/index` });
@@ -85,12 +106,10 @@ const BlogDetail: FC = () => {
 				{`${filters.formateDate(detail.updateTime, '-')}`}
 				<Text className='at-article__name'>{`        🐔哥`}</Text>
 			</View>
-			<AtButton
-				full={false}
-				className={[ 'sava-btn', { 'sava-btn__active': isAlreadyCollect } ]}
-				onClick={collect}>
-				{isAlreadyCollect ? '已收藏' : '+ 收藏'}
-			</AtButton>
+
+			<AtFab className='sava-btn' onClick={collect}>
+				<Text className='at-fab__icon  sava-btn__text'>{isAlreadyCollect ? '取消收藏' : '收藏'}</Text>
+			</AtFab>
 			<View className='at-article__content'>
 				<Image className='at-article__img' src={detail.fileID} mode='widthFix' />
 

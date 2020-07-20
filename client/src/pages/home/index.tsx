@@ -84,7 +84,6 @@ const Home: FC = () => {
 
 			return item;
 		});
-		console.log(mapData);
 		if (mapData.length) {
 			setStatus('more');
 
@@ -109,6 +108,7 @@ const Home: FC = () => {
 	const onClickTabsPane = async (sortType) => {
 		setSortType(sortType);
 		setSkip(0);
+		setArticleList([]);
 		setStatus('more');
 	};
 	const onClickLoadMore = async () => {
@@ -118,9 +118,10 @@ const Home: FC = () => {
 
 	const onGoToDetail = (item) => {
 		Taro.navigateTo({
-			url: `/pages/detail/index?info=${JSON.stringify(item)}`
+			url: `/pages/detail/index?_id=${item._id}`
 		});
 	};
+	console.log(!articleList.length, 123);
 
 	if (!articleList.length) return <XEmpty />;
 	return (

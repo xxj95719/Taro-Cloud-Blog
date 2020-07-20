@@ -1,6 +1,5 @@
 import Taro, { FC, memo } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
-import filters from '@/utils/filters';
 import './index.scss';
 type Props = {
 	item: {

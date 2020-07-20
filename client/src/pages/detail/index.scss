@@ -1,11 +1,13 @@
 .sava-btn {
-  position: absolute;
-  right: 30px;
-  top: 40px;
-  color: $green;
 
-  &__active {
-    background-color: $green;
-    color: $white;
+  position: fixed;
+  right: 30px;
+  bottom: 120px;
+
+  &__text {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

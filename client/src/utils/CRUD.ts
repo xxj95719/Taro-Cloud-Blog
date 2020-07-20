@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-20 14:08:51
+ * @LastEditTime: 2020-07-20 18:37:45
  */
 
 import Taro from "@tarojs/taro";
@@ -18,7 +18,7 @@ interface AddConfig extends Collection {
   data: object // 增：插入内容；
 }
 interface DelConfig extends Collection {
-  _id: string // 删：根据_id删除记录
+  where: object // 删：根据条件删除记录
 }
 interface UpdateConfig extends Collection {
   data: object // 改：局部更新内容
@@ -51,11 +51,11 @@ export async function dbAdd (config: AddConfig): Promise<Boolean> {
 }
 // 删（单条记录）
 export async function dbDelete (config: DelConfig): Promise<Boolean> {
-  const configCollection = db.collection(config.collection);
+  const configCollection = db.collection(config.collection) as any;
   try {
     // 删除一条数据
     const res = await configCollection
-      .doc(config._id).remove({});
+      .where(config.where).remove();
 
     console.log(`${config.collection}数据delete : `, res)
     return true
