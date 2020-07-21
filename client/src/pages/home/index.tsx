@@ -32,7 +32,7 @@ interface SortTypeList {
 const Home: FC = () => {
 	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
 
-	const [ sortType, setSortType ] = useState<number>(); // 数据位置标识
+	const [ sortType, setSortType ] = useState<number | undefined>(); // 数据位置标识
 
 	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
 
@@ -65,6 +65,8 @@ const Home: FC = () => {
 			collection: 'article',
 			skip,
 			limit: 10,
+			key: 'updateTime',
+			sort: 'desc',
 			where: {
 				sortType
 			}
@@ -106,7 +108,7 @@ const Home: FC = () => {
 		return data as Array<SortTypeList>;
 	};
 	const onClickTabsPane = async (sortType) => {
-		setSortType(sortType);
+		setSortType(!sortType ? undefined : sortType);
 		setSkip(0);
 		setArticleList([]);
 		setStatus('more');
@@ -121,16 +123,17 @@ const Home: FC = () => {
 			url: `/pages/detail/index?_id=${item._id}`
 		});
 	};
-	console.log(!articleList.length, 123);
 
-	if (!articleList.length) return <XEmpty />;
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
 			<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
-			{articleList.map((item) => (
-				<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
-			))}
+
+			{articleList.length &&
+				articleList.map((item) => (
+					<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
+				))}
 			{articleList.length > 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
+			{!articleList.length && <XEmpty />}
 		</ScrollView>
 	);
 };

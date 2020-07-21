@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-20 18:37:45
+ * @LastEditTime: 2020-07-21 11:15:42
  */
 
 import Taro from "@tarojs/taro";
@@ -22,12 +22,14 @@ interface DelConfig extends Collection {
 }
 interface UpdateConfig extends Collection {
   data: object // 改：局部更新内容
-  _id: string // 改：根据_id
+  where?: object // 改：条件
 }
 interface GetConfig extends Collection {
   skip: number; // 查：起始位置
   limit?: number; // 查：限制条数
   where?: object; // 查：条件
+  key?: string;
+  sort?: 'asc' | 'desc'; // 根据【key】按照【sort】排序
 }
 
 
@@ -73,10 +75,10 @@ export async function dbDelete (config: DelConfig): Promise<Boolean> {
 }
 // 改（单条记录）
 export async function dbUpdate (config: UpdateConfig): Promise<Boolean> {
-  const configCollection = db.collection(config.collection);
+  const configCollection = db.collection(config.collection) as any;
   try {
     const res = await configCollection
-      .doc(config._id).update({ data: config.data });
+      .where(config.where).update({ data: config.data });
 
     console.log(`${config.collection}数据update : `, res)
     return true
@@ -94,11 +96,17 @@ export async function dbUpdate (config: UpdateConfig): Promise<Boolean> {
 }
 // 查
 export async function dbGet (config: GetConfig) {
-  const configCollection = db.collection(config.collection);
+  let configCollection
+  if (config.key && config.sort) {
+    configCollection = db.collection(config.collection).orderBy(config.key, config.sort);
+  } else {
+    configCollection = db.collection(config.collection)
+  }
   try {
     let res
     if (config.where && config.limit) {
       res = await configCollection
+
         .skip(config.skip)
         .limit(config.limit)
         .where(config.where)

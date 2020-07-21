@@ -1,4 +1,4 @@
-import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useScope, useDidShow } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import TaroParser from 'taro-parse';
 import { AtButton, AtFab } from 'taro-ui';
@@ -23,28 +23,25 @@ interface ArticleDetail {
 
 const BlogDetail: FC = () => {
 	const scope = useScope();
+
 	const [ detail, setDetail ] = useState<ArticleDetail>();
 
 	const [ isAlreadyCollect, setIsAlreadyCollect ] = useState<boolean>(false);
 
-	useEffect(
-		() => {
-			(async function() {
-				if (scope) {
-					console.log(scope.options._id);
-					const data = await dbGet({
-						collection: 'article',
-						skip: 0,
-						where: {
-							_id: scope.options._id
-						}
-					});
-					setDetail(data[0]);
-				}
-			})();
-		},
-		[ scope ]
-	);
+	useDidShow(() => {
+		(async function() {
+			if (scope) {
+				const data = await dbGet({
+					collection: 'article',
+					skip: 0,
+					where: {
+						_id: scope.options._id
+					}
+				});
+				setDetail(data[0]);
+			}
+		})();
+	});
 
 	useEffect(
 		() => {
@@ -53,6 +50,10 @@ const BlogDetail: FC = () => {
 		[ detail ]
 	);
 
+	/**
+	 * 判断是否收藏
+	 *
+	 */
 	const getIsAlreadyCollect = async () => {
 		try {
 			const userInfo = await Taro.getStorageSync('userInfo');
@@ -67,6 +68,11 @@ const BlogDetail: FC = () => {
 			}
 		} catch (error) {}
 	};
+
+	/**
+	 * 收藏/取消收藏
+	 *
+	 */
 	const collect = async () => {
 		let bool = await isLogin();
 		if (bool && detail && detail._id) {
@@ -98,15 +104,23 @@ const BlogDetail: FC = () => {
 			Taro.navigateTo({ url: `/pages/login/index` });
 		}
 	};
+
+	const onGotoEdit = (_id) => {
+		Taro.navigateTo({ url: `/pages/addOrEdit/index?title=更新博客&_id=${_id}` });
+	};
 	if (!detail) return null;
 	return (
 		<View className='at-article'>
 			<View className='at-article__h1'>{detail.title}</View>
-			<View className='at-article__info'>
-				{`${filters.formateDate(detail.updateTime, '-')}`}
-				<Text className='at-article__name'>{`        🐔哥`}</Text>
+			<View className='at-article__info-container'>
+				<View className='at-article__info'>
+					{`${filters.formateDate(detail.updateTime, '-')}`}
+					<View className='at-article__name'>🐔哥</View>
+				</View>
+				<AtButton type='primary' onClick={onGotoEdit.bind(this, detail._id)}>
+					编辑
+				</AtButton>
 			</View>
-
 			<AtFab className='sava-btn' onClick={collect}>
 				<Text className='at-fab__icon  sava-btn__text'>{isAlreadyCollect ? '取消收藏' : '收藏'}</Text>
 			</AtFab>

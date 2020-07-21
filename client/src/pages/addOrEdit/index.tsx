@@ -5,7 +5,19 @@ import filters from '@/utils/filters';
 
 import './index.scss';
 
-import { dbAdd } from '@/utils/CRUD';
+import { dbAdd, dbGet, dbUpdate } from '@/utils/CRUD';
+
+interface ArticleDetail {
+	_id: string;
+	title: string;
+	desc: string;
+	content: string;
+	sortType: number;
+	sortTypeName?: string;
+	fileID: string;
+	creatTime: Date;
+	updateTime: Date;
+}
 
 const AddOrEdit: FC = () => {
 	const scope = useScope();
@@ -26,12 +38,33 @@ const AddOrEdit: FC = () => {
 
 	const [ sortTypeName, setSortTypeName ] = useState<string>('JavaScript');
 
+	const [ isAdd, setIsAdd ] = useState<boolean>(true);
+
+	const [ fileID, setFileID ] = useState<string>();
+
 	useEffect(
 		() => {
-			if (scope) {
-				Taro.setNavigationBarTitle({
-					title: scope.options.title || 'BLOG'
-				});
+			Taro.setNavigationBarTitle({
+				title: scope.options.title || 'BLOG'
+			});
+			if (scope.options._id) {
+				setIsAdd(false);
+				(async function() {
+					const data = await dbGet({
+						collection: 'article',
+						skip: 0,
+						where: {
+							_id: scope.options._id
+						}
+					});
+					setTitle(data[0].title);
+					setDesc(data[0].desc);
+					setMarkdownValue(data[0].content);
+					setSortType(data[0].sortType);
+					setSortTypeName(sortTypeList[data[0].sortType - 1].sortTypeName);
+					setFileID(data[0].fileID);
+					setFiles([ { url: data[0].fileID } ]);
+				})();
 			}
 		},
 		[ scope ]
@@ -49,6 +82,8 @@ const AddOrEdit: FC = () => {
 		setMarkdownValue(value);
 	};
 	const onChange = async (files) => {
+		setFileID('');
+
 		setFiles(files);
 
 		Taro.getFileSystemManager().readFile({
@@ -66,41 +101,69 @@ const AddOrEdit: FC = () => {
 	};
 
 	const onSubmit = async () => {
-		console.log(title);
 		if (!title || !markdownValue || !desc) {
 			Taro.showToast({
 				title: !title ? '标题不能为空' : !desc ? '描述不能为空' : !markdownValue ? '内容不能为空' : '必填项不能为空',
 				icon: 'none'
 			});
 		} else {
-			const { result } = (await Taro.cloud.callFunction({
-				name: 'uploadFiles',
-				data: {
-					url: base64Url || files[0].url
-				}
-			})) as any;
-			if (!result)
-				Taro.showToast({
-					title: '图片上传失败',
-					icon: 'none'
+			let uploadFilesRes;
+			let dbRes;
+
+			if (!fileID) {
+				uploadFilesRes = (await Taro.cloud.callFunction({
+					name: 'uploadFiles',
+					data: {
+						url: base64Url || files[0].url
+					}
+				})) as any;
+				if (!uploadFilesRes.result)
+					Taro.showToast({
+						title: '图片上传失败',
+						icon: 'none'
+					});
+			}
+
+			if (isAdd) {
+				dbRes = await dbAdd({
+					collection: 'article',
+					data: {
+						title,
+						content: markdownValue,
+						desc,
+						sortType,
+						fileID: uploadFilesRes.result.fileID || '',
+						creatTime: new Date(),
+						updateTime: new Date()
+					}
 				});
-			const res = await dbAdd({
-				collection: 'article',
-				data: {
-					title,
-					content: markdownValue,
-					desc,
-					sortType,
-					fileID: result.fileID || '',
-					creatTime: new Date(),
-					updateTime: new Date()
-				}
-			});
-			if (res) {
+			} else {
+				dbRes = await dbUpdate({
+					collection: 'article',
+					where: {
+						_id: scope.options._id
+					},
+					data: {
+						title,
+						content: markdownValue,
+						desc,
+						sortType,
+						fileID: fileID || uploadFilesRes.result.fileID || '',
+						updateTime: new Date()
+					}
+				});
+			}
+
+			if (dbRes) {
 				Taro.showToast({
 					title: '保存成功',
 					icon: 'success',
 					success: () => {
+						// if (!isAdd) {
+						// 	let pages = Taro.getCurrentPages(); //获取页面栈
+						// 	let prevPage = pages[pages.length - 2]; //上一个页面
+						// 	console.log(prevPage);
+						// }
 						Taro.navigateBack();
 					}
 				});
