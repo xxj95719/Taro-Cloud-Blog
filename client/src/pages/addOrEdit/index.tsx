@@ -159,11 +159,6 @@ const AddOrEdit: FC = () => {
 					title: '保存成功',
 					icon: 'success',
 					success: () => {
-						// if (!isAdd) {
-						// 	let pages = Taro.getCurrentPages(); //获取页面栈
-						// 	let prevPage = pages[pages.length - 2]; //上一个页面
-						// 	console.log(prevPage);
-						// }
 						Taro.navigateBack();
 					}
 				});

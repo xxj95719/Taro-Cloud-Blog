@@ -3,11 +3,23 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 17:45:28
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-21 11:15:42
+ * @LastEditTime: 2020-07-21 14:47:48
  */
 
 import Taro from "@tarojs/taro";
 
+
+const ERR_CODE_LIST = {
+  '-501017': '磁盘耗尽',
+  '-501018': '资源不可用',
+  '-502001': '数据库请求失败',
+  '-502002': '非法的数据库指令',
+  '-502003': '无权限操作数据库',
+  '-502011': '操作超时',
+  '-601001': '系统错误',
+  '-601002': '系统参数错误',
+  '-601003': '系统网络错误',
+};
 // 连接数据库
 const db = Taro.cloud.database();
 
@@ -42,8 +54,9 @@ export async function dbAdd (config: AddConfig): Promise<Boolean> {
     console.log(`${config.collection}数据add : `, res)
     return true
   } catch (error) {
+    const { errCode } = error;
     Taro.showToast({
-      title: '新增数据出错',
+      title: ERR_CODE_LIST[errCode] || '新增数据出错',
       icon: 'none',
       duration: 2000
     })
@@ -63,8 +76,9 @@ export async function dbDelete (config: DelConfig): Promise<Boolean> {
     return true
 
   } catch (error) {
+    const { errCode } = error;
     Taro.showToast({
-      title: '数据删除出错',
+      title: ERR_CODE_LIST[errCode] || '数据删除出错',
       icon: 'none',
       duration: 2000
     })
@@ -84,12 +98,13 @@ export async function dbUpdate (config: UpdateConfig): Promise<Boolean> {
     return true
 
   } catch (error) {
+    const { errCode } = error;
     Taro.showToast({
-      title: '数据更新出错',
+      title: ERR_CODE_LIST[errCode] || '数据更新出错',
       icon: 'none',
       duration: 2000
     })
-    console.error(error)
+    console.log(error.errCode)
     return false
 
   }
@@ -131,8 +146,9 @@ export async function dbGet (config: GetConfig) {
 
     return res.data
   } catch (error) {
+    const { errCode } = error;
     Taro.showToast({
-      title: '数据查询出错',
+      title: ERR_CODE_LIST[errCode] || '数据查询出错',
       icon: 'none',
       duration: 2000
     })
