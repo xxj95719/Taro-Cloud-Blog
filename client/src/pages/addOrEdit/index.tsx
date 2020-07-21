@@ -1,23 +1,10 @@
 import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
 import { View, Picker } from '@tarojs/components';
 import { AtForm, AtButton, AtTextarea, AtImagePicker, AtInput, AtList, AtListItem } from 'taro-ui';
-import filters from '@/utils/filters';
 
 import './index.scss';
 
 import { dbAdd, dbGet, dbUpdate } from '@/utils/CRUD';
-
-interface ArticleDetail {
-	_id: string;
-	title: string;
-	desc: string;
-	content: string;
-	sortType: number;
-	sortTypeName?: string;
-	fileID: string;
-	creatTime: Date;
-	updateTime: Date;
-}
 
 const AddOrEdit: FC = () => {
 	const scope = useScope();

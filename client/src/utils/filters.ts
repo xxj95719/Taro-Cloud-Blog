@@ -3,7 +3,7 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2020-07-08 16:21:57
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2020-07-13 14:35:22
+ * @LastEditTime: 2020-07-21 15:31:56
  */
 
 const filters = {
@@ -20,6 +20,21 @@ const filters = {
     // const s = date.getSeconds(); // 秒
     const dateString = Y + M + D + h + m;
     return dateString;
+  },
+  beautifyDate (date: Date) {
+    // time为时间戳
+    const delta: number = (new Date().getTime() - new Date(date).getTime()) / 1000;
+    if (delta / (60 * 60 * 24 * 365) > 1)
+      return `${parseInt(String(delta / (60 * 60 * 24 * 365)))}年前`
+    if (delta / (60 * 60 * 24 * 30) > 1)
+      return `${parseInt(String(delta / (60 * 60 * 24 * 30)))}个月前`
+    if (delta / (60 * 60 * 24 * 7) > 1)
+      return `${parseInt(String(delta / (60 * 60 * 24 * 7)))}周前`
+    if (delta / (60 * 60 * 24) > 1)
+      return `${parseInt(String(delta / (60 * 60 * 24)))}天前`
+    if (delta / (60 * 60) > 1) return `${parseInt(String(delta / (60 * 60)))}小时前`
+    if (delta / 60 > 1) return `${parseInt(String(delta / 60))}分钟前`
+    return '刚刚'
   }
 }
 

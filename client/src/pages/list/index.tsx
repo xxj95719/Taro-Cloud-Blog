@@ -11,14 +11,18 @@ import { dbGet } from '@/utils/CRUD';
 
 type ArticleList = Array<{
 	_id: string;
-	title: string;
-	desc: string;
-	fileID: string;
-	content: string;
-	sortType: number;
-	sortTypeName?: string;
-	creatTime: Date;
-	updateTime: Date;
+	articleId: string;
+	artInfo: {
+		_id: string;
+		title: string;
+		desc: string;
+		fileID: string;
+		content: string;
+		sortType: number;
+		sortTypeName?: string;
+		creatTime: Date;
+		updateTime: Date;
+	};
 }>;
 
 interface SortTypeList {
@@ -67,16 +71,19 @@ const List: FC = () => {
 			name: 'getCollectArtList'
 		})) as any;
 		if (result && result.list.length) {
-			let mapData = result.list[0].artInfo.map((item) => {
-				let fObj: {
-					_id?: string;
-					sortType?: number;
-					sortTypeName: string;
-				} = res.find((jtem) => jtem.sortType === item.sortType) || {
-					sortTypeName: ''
-				};
-				item.sortTypeName = fObj.sortTypeName;
+			let mapData = result.list.map((item) => {
+				item.artInfo = item.artInfo.map((jtem) => {
+					let fObj: {
+						_id?: string;
+						sortType?: number;
+						sortTypeName: string;
+					} = res.find((ktem) => ktem.sortType === jtem.sortType) || {
+						sortTypeName: ''
+					};
+					jtem.sortTypeName = fObj.sortTypeName;
 
+					return jtem;
+				});
 				return item;
 			});
 
@@ -109,16 +116,21 @@ const List: FC = () => {
 	};
 
 	const onGoToDetail = (item) => {
-		console.log(item);
 		Taro.navigateTo({
-			url: `/pages/detail/index?info=${JSON.stringify(item)}`
+			url: `/pages/detail/index?_id=${item.articleId}`
 		});
 	};
+	console.log(articleList);
 	if (!articleList.length) return <XEmpty />;
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
 			{articleList.map((item) => (
-				<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
+				<XCard
+					item={item.artInfo[0]}
+					key={item._id}
+					onGoToDetail={onGoToDetail.bind(this, item)}
+					isHome={false}
+				/>
 			))}
 			{articleList.length > 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
 		</ScrollView>

@@ -2,6 +2,7 @@ import Taro, { FC, useState, useEffect, useScope, useDidShow } from '@tarojs/tar
 import { View, Text, Image } from '@tarojs/components';
 import TaroParser from 'taro-parse';
 import { AtButton, AtFab } from 'taro-ui';
+import XEmpty from '@/components/XEmpty/index';
 import { isLogin } from '@/utils';
 import filters from '@/utils/filters';
 
@@ -108,7 +109,7 @@ const BlogDetail: FC = () => {
 	const onGotoEdit = (_id) => {
 		Taro.navigateTo({ url: `/pages/addOrEdit/index?title=更新博客&_id=${_id}` });
 	};
-	if (!detail) return null;
+	if (!detail) return <XEmpty />;
 	return (
 		<View className='at-article'>
 			<View className='at-article__h1'>{detail.title}</View>
@@ -121,6 +122,7 @@ const BlogDetail: FC = () => {
 					编辑
 				</AtButton>
 			</View>
+
 			<AtFab className='sava-btn' onClick={collect}>
 				<Text className='at-fab__icon  sava-btn__text'>{isAlreadyCollect ? '取消收藏' : '收藏'}</Text>
 			</AtFab>
