@@ -38,8 +38,6 @@ const List: FC = () => {
 
   const [status, setStatus] = useState<string>("more"); // 状态
 
-  const [title, setTitle] = useState<string>("more"); // 状态
-
   const scope = useScope();
 
   useEffect(() => {
@@ -47,7 +45,6 @@ const List: FC = () => {
       Taro.setNavigationBarTitle({
         title: scope.options.title || "BLOG"
       });
-      setTitle(scope.options.title);
     }
   }, [scope]);
 
