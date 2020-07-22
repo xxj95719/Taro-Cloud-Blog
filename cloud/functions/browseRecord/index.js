@@ -9,14 +9,14 @@ exports.main = async (event) => {
   try {
     const wxContext = cloud.getWXContext()
 
-    const res = await db.collection('browse-records')
+    const res = await db.collection('browse_records')
       .where({
         articleId: event.articleId,
         _openid: wxContext.OPENID
       })
       .get();
     if (!res.data.length) {
-      db.collection('browse-records')
+      db.collection('browse_records')
         .add({
           data: {
             articleId: event.articleId,

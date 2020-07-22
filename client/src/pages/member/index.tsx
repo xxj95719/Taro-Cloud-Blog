@@ -9,31 +9,68 @@ import Menu from './components/menu';
 
 import Exit from './components/exit';
 
-import { dbGet } from '@/utils/CRUD';
-
 interface UserInfo {
 	avatarUrl: string;
 	nickName: string;
 }
 
+let list = [
+	{
+		title: '收藏集',
+		iconInfo: {
+			size: 25,
+			color: '#f70',
+			prefixClass: 'icon',
+			value: 'start'
+		},
+		linkUrl: `/pages/list/index?title=收藏集`
+	},
+	{
+		title: '阅读过的文章',
+		iconInfo: {
+			size: 25,
+			color: '#78A4FA',
+			prefixClass: 'icon',
+			value: 'eye'
+		},
+		linkUrl: `/pages/list/index?title=阅读过的文章`
+	}
+];
 const Member: FC = () => {
 	const [ userInfo, setUserInfo ] = useState<UserInfo>({ avatarUrl: '', nickName: '登录' });
 
 	useDidShow(() => {
 		(async () => {
 			const userInfo = await Taro.getStorageSync('userInfo');
-			console.log(userInfo);
-			if (userInfo) setUserInfo(userInfo);
+			if (userInfo) {
+				setUserInfo(userInfo);
+				if (userInfo.openId === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM') {
+					list.push({
+						title: '写博客',
+						iconInfo: {
+							size: 25,
+							color: '#78A4FA',
+							prefixClass: 'icon',
+							value: 'markdown'
+						},
+						linkUrl: `/pages/addOrEdit/index?title=写博客`
+					});
+				}
+			}
 		})();
 	});
 	const onExit = () => {
 		Taro.clearStorageSync();
+
 		setUserInfo({ avatarUrl: '', nickName: '登录' });
+		if (list.find((item) => item.title === '写博客')) {
+			list = list.filter((jtem) => jtem.title !== '写博客');
+		}
 	};
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
 			<User userInfo={userInfo} />
-			<Menu />
+			<Menu list={list} />
 			<Exit onExit={onExit} />
 		</ScrollView>
 	);

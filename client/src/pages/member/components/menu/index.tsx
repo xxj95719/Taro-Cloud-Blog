@@ -1,43 +1,21 @@
-import Taro, { FC, useEffect } from '@tarojs/taro';
+import Taro, { FC } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtList, AtListItem } from 'taro-ui';
 import './index.scss';
 
-const Menu: FC = () => {
-	const list = [
-		{
-			title: '收藏集',
-			iconInfo: {
-				size: 25,
-				color: '#f70',
-				prefixClass: 'icon',
-				value: 'start'
-			},
-			linkUrl: `/pages/list/index?title=收藏集`
-		},
-		{
-			title: '阅读过的文章',
-			iconInfo: {
-				size: 25,
-				color: '#78A4FA',
-				prefixClass: 'icon',
-				value: 'eye'
-			},
-			linkUrl: `/pages/list/index?title=阅读过的文章`
-		},
-		{
-			title: '写博客',
-			iconInfo: {
-				size: 25,
-				color: '#78A4FA',
-				prefixClass: 'icon',
-				value: 'markdown'
-			},
-			linkUrl: `/pages/addOrEdit/index?title=写博客`
-		}
-	];
-	useEffect(() => {}, []);
-
+interface Props {
+	list: {
+		title: string;
+		iconInfo: {
+			size: number;
+			color: string;
+			prefixClass: string;
+			value: string;
+		};
+		linkUrl: string;
+	}[];
+}
+const Menu: FC<Props> = ({ list }) => {
 	const onGoToLink = (linkUrl) => {
 		Taro.navigateTo({ url: linkUrl });
 	};
@@ -59,4 +37,7 @@ const Menu: FC = () => {
 	);
 };
 
+Menu.defaultProps = {
+	list: []
+};
 export default Menu;

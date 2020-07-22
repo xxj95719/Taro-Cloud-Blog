@@ -21,12 +21,18 @@ interface ArticleDetail {
 	updateTime: Date;
 }
 
+interface UserInfo {
+	openId: string;
+}
+
 const BlogDetail: FC = () => {
 	const scope = useScope();
 
 	const [ detail, setDetail ] = useState<ArticleDetail>();
 
 	const [ isAlreadyCollect, setIsAlreadyCollect ] = useState<boolean>(false);
+
+	const [ userInfo, setUserInfo ] = useState<UserInfo>({ openId: '' });
 
 	useShareAppMessage(() => {
 		if (detail)
@@ -35,8 +41,11 @@ const BlogDetail: FC = () => {
 				path: `/pages/detail/index?_id=${detail._id}`
 			};
 	});
+
 	useDidShow(() => {
 		(async function() {
+			const userInfo = await Taro.getStorageSync('userInfo');
+			if (userInfo) setUserInfo(userInfo);
 			if (scope) {
 				Taro.showLoading({
 					title: '加载中'
@@ -48,7 +57,6 @@ const BlogDetail: FC = () => {
 						_id: scope.options._id
 					}
 				});
-				browseRecord(scope.options._id);
 				setDetail(data[0]);
 				Taro.hideLoading();
 			}
@@ -58,6 +66,7 @@ const BlogDetail: FC = () => {
 	useEffect(
 		() => {
 			getIsAlreadyCollect();
+			browseRecord(scope.options._id);
 		},
 		[ detail ]
 	);
@@ -71,6 +80,7 @@ const BlogDetail: FC = () => {
 		})) as any;
 		console.log(res);
 	};
+
 	/**
    * 判断是否收藏
    *
@@ -140,9 +150,11 @@ const BlogDetail: FC = () => {
 					{`${filters.formateDate(detail.updateTime, '-')}`}
 					<View className='at-article__name'>🐔哥</View>
 				</View>
-				<AtButton type='primary' onClick={onGotoEdit.bind(this, detail._id)}>
-					编辑
-				</AtButton>
+				{userInfo.openId === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM' && (
+					<AtButton type='primary' onClick={onGotoEdit.bind(this, detail._id)}>
+						编辑
+					</AtButton>
+				)}
 			</View>
 
 			<AtFab className='sava-btn' onClick={collect}>
