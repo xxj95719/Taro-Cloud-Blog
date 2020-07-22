@@ -32,7 +32,7 @@ const BlogDetail: FC = () => {
 		if (detail)
 			return {
 				title: detail.title,
-				path: `/pages/detail/index?_id${scope.options._id}`
+				path: `/pages/detail/index?_id=${detail._id}`
 			};
 	});
 	useDidShow(() => {
