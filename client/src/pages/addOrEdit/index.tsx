@@ -76,19 +76,20 @@ const AddOrEdit: FC = () => {
 		setFileID('');
 
 		setFiles(files);
-
-		Taro.getFileSystemManager().readFile({
-			filePath: files[0].url, //选择图片返回的相对路径
-			encoding: 'base64', //编码格式
-			success: (res) => {
-				//成功的回调
-				if (res) {
-					let { data } = res as any;
-					setBase64Url(data);
-				}
-			},
-			fail: () => {}
-		});
+		if (files.length && files[0].url) {
+			Taro.getFileSystemManager().readFile({
+				filePath: files[0].url, //选择图片返回的相对路径
+				encoding: 'base64', //编码格式
+				success: (res) => {
+					//成功的回调
+					if (res) {
+						let { data } = res as any;
+						setBase64Url(data);
+					}
+				},
+				fail: () => {}
+			});
+		}
 	};
 
 	const onSubmit = async () => {
