@@ -35,7 +35,7 @@ const TabsPane: FC<Props> = ({ tabList, onClickTabsPane }) => {
 			});
 			setMapTabList(mapTabList);
 		},
-		[ tabList ]
+		[ mapTabList ]
 	);
 
 	const handleClick = async (value) => {

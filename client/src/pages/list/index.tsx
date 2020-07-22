@@ -1,138 +1,140 @@
-import Taro, { FC, useState, useEffect, useScope } from "@tarojs/taro";
-import { ScrollView } from "@tarojs/components";
-import { AtLoadMore } from "taro-ui";
-import "./index.scss";
+import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
+import { ScrollView } from '@tarojs/components';
+import { AtLoadMore } from 'taro-ui';
+import './index.scss';
 
-import XCard from "@/components/XCard/index";
+import XCard from '@/components/XCard/index';
 
-import XEmpty from "@/components/XEmpty/index";
+import XEmpty from '@/components/XEmpty/index';
 
-import { dbGet } from "@/utils/CRUD";
+import { dbGet } from '@/utils/CRUD';
 
 type ArticleList = Array<{
-  _id: string;
-  articleId: string;
-  artInfo: {
-    _id: string;
-    title: string;
-    desc: string;
-    fileID: string;
-    content: string;
-    sortType: number;
-    sortTypeName?: string;
-    creatTime: Date;
-    updateTime: Date;
-  };
+	_id: string;
+	articleId: string;
+	artInfo: {
+		_id: string;
+		title: string;
+		desc: string;
+		fileID: string;
+		content: string;
+		sortType: number;
+		sortTypeName?: string;
+		creatTime: Date;
+		updateTime: Date;
+	};
 }>;
 
 interface SortTypeList {
-  _id: string;
-  sortType: number;
-  sortTypeName: string;
+	_id: string;
+	sortType: number;
+	sortTypeName: string;
 }
 
 const List: FC = () => {
-  const [skip, setSkip] = useState<number>(0); // 数据位置标识
+	const [ isFetchDone, setIsFetchDone ] = useState<boolean>(false);
 
-  const [articleList, setArticleList] = useState<ArticleList>([]); // 博客列表
+	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
 
-  const [status, setStatus] = useState<string>("more"); // 状态
+	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
 
-  const scope = useScope();
+	const [ status, setStatus ] = useState<string>('more'); // 状态
 
-  useEffect(() => {
-    if (scope) {
-      Taro.setNavigationBarTitle({
-        title: scope.options.title || "BLOG"
-      });
-    }
-  }, [scope]);
+	const scope = useScope();
 
-  useEffect(() => {
-    getArticleList();
-  }, [skip]);
-  // 联表查询(收藏集/浏览记录)
-  const getArticleList = async () => {
-    console.log(scope.options.title);
-    let res: Array<SortTypeList> =
-      (await Taro.getStorageSync("sortTypeList")) || [];
-    if (!res.length) {
-      res = await getArticleSortTypeList();
-      Taro.setStorageSync("sortTypeList", res);
-    }
-    const { result } = (await Taro.cloud.callFunction({
-      name:
-        scope.options.title === "收藏集"
-          ? "getCollectArtList"
-          : "getBrowseArtList"
-    })) as any;
-    if (result && result.list.length) {
-      let mapData = result.list.map(item => {
-        item.artInfo = item.artInfo.map(jtem => {
-          let fObj: {
-            _id?: string;
-            sortType?: number;
-            sortTypeName: string;
-          } = res.find(ktem => ktem.sortType === jtem.sortType) || {
-            sortTypeName: ""
-          };
-          jtem.sortTypeName = fObj.sortTypeName;
+	useEffect(() => {
+		if (scope) {
+			Taro.setNavigationBarTitle({
+				title: scope.options.title || 'BLOG'
+			});
+		}
+	}, []);
 
-          return jtem;
-        });
-        return item;
-      });
+	useEffect(
+		() => {
+			getArticleList();
+		},
+		[ skip ]
+	);
+	// 联表查询(收藏集/浏览记录)
+	const getArticleList = async () => {
+		Taro.showLoading({
+			title: '加载中'
+		});
+		let res: Array<SortTypeList> = (await Taro.getStorageSync('sortTypeList')) || [];
+		if (!res.length) {
+			res = await getArticleSortTypeList();
+			Taro.setStorageSync('sortTypeList', res);
+		}
+		const { result } = (await Taro.cloud.callFunction({
+			name: scope.options.title === '收藏集' ? 'getCollectArtList' : 'getBrowseArtList'
+		})) as any;
+		Taro.hideLoading();
+		setIsFetchDone(true);
+		if (result && result.list.length) {
+			let mapData = result.list.map((item) => {
+				item.artInfo = item.artInfo.map((jtem) => {
+					let fObj: {
+						_id?: string;
+						sortType?: number;
+						sortTypeName: string;
+					} = res.find((ktem) => ktem.sortType === jtem.sortType) || {
+						sortTypeName: ''
+					};
+					jtem.sortTypeName = fObj.sortTypeName;
 
-      if (mapData.length) {
-        setStatus("more");
+					return jtem;
+				});
+				return item;
+			});
 
-        mapData = articleList.concat(mapData);
-      } else {
-        setStatus("noMore");
+			if (mapData.length) {
+				setStatus('more');
 
-        mapData = articleList;
-      }
+				mapData = articleList.concat(mapData);
+			} else {
+				setStatus('noMore');
 
-      setArticleList(mapData);
-    }
-  };
+				mapData = articleList;
+			}
 
-  const getArticleSortTypeList = async () => {
-    const data = await dbGet({
-      collection: "article_sort_type",
-      skip,
-      limit: 10
-    });
-    return data as Array<SortTypeList>;
-  };
+			setArticleList(mapData);
+		}
+	};
 
-  const onClickLoadMore = async () => {
-    setStatus("loading");
-    setSkip(articleList.length || 0);
-  };
+	const getArticleSortTypeList = async () => {
+		const data = await dbGet({
+			collection: 'article_sort_type',
+			skip,
+			limit: 10
+		});
+		return data as Array<SortTypeList>;
+	};
 
-  const onGoToDetail = item => {
-    Taro.navigateTo({
-      url: `/pages/detail/index?_id=${item.articleId}`
-    });
-  };
-  console.log(articleList);
-  if (!articleList.length) return <XEmpty />;
-  return (
-    <ScrollView className="scrollview" scrollY enableBackToTop scrollAnchoring>
-      {articleList.map(item => (
-        <XCard
-          item={item.artInfo[0]}
-          key={item._id}
-          onGoToDetail={onGoToDetail.bind(this, item)}
-          isHome={false}
-        />
-      ))}
-      {articleList.length > 10 && (
-        <AtLoadMore onClick={onClickLoadMore} status={status} />
-      )}
-    </ScrollView>
-  );
+	const onClickLoadMore = async () => {
+		setStatus('loading');
+		setSkip(articleList.length || 0);
+	};
+
+	const onGoToDetail = (item) => {
+		Taro.navigateTo({
+			url: `/pages/detail/index?_id=${item.articleId}`
+		});
+	};
+	if (!articleList.length && isFetchDone) return <XEmpty />;
+	return (
+		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
+			{articleList.map((item) => (
+				<XCard
+					item={item.artInfo[0]}
+					key={item._id}
+					onGoToDetail={onGoToDetail.bind(this, item)}
+					isHome={false}
+				/>
+			))}
+			{articleList.length > 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
+		</ScrollView>
+	);
 };
 
 export default List;
