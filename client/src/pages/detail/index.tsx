@@ -1,4 +1,4 @@
-import Taro, { FC, useState, useEffect, useScope, useDidShow } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useScope, useDidShow, useShareAppMessage } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import TaroParser from 'taro-parse';
 import { AtButton, AtFab } from 'taro-ui';
@@ -28,6 +28,13 @@ const BlogDetail: FC = () => {
 
 	const [ isAlreadyCollect, setIsAlreadyCollect ] = useState<boolean>(false);
 
+	useShareAppMessage(() => {
+		if (detail)
+			return {
+				title: detail.title,
+				path: `/pages/detail/index?_id${scope.options._id}`
+			};
+	});
 	useDidShow(() => {
 		(async function() {
 			if (scope) {
@@ -41,9 +48,9 @@ const BlogDetail: FC = () => {
 						_id: scope.options._id
 					}
 				});
-				Taro.hideLoading();
 				browseRecord(scope.options._id);
 				setDetail(data[0]);
+				Taro.hideLoading();
 			}
 		})();
 	});

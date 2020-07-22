@@ -1,4 +1,4 @@
-import Taro, { FC, useState, useEffect } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useShareAppMessage } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
 import { AtLoadMore } from 'taro-ui';
 import './index.scss';
@@ -42,6 +42,13 @@ const Home: FC = () => {
 	const [ sortTypeList, setSortTypeList ] = useState<any>([]); // 标签分类
 
 	const [ status, setStatus ] = useState<string>('more'); // 状态
+
+	useShareAppMessage(() => {
+		return {
+			title: '快来看我吧～',
+			path: '/pages/home/index'
+		};
+	});
 
 	useEffect(
 		() => {
