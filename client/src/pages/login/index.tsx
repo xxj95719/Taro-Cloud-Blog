@@ -13,16 +13,15 @@ const Login: FC = () => {
 		Taro.cloud
 			.callFunction({
 				// 要调用的云函数名称
-				name: 'login'
+				name: 'login',
+				data: {
+					userInfo: info.detail.userInfo
+				}
 			})
 			.then((res) => {
 				Taro.hideLoading();
-
-				let { userInfo }: any = res.result;
-
+				let userInfo = res.result;
 				userInfo = Object.assign(userInfo, info.detail.userInfo);
-
-				dbAdd({ collection: 'user_info', data: info.detail.userInfo }); // 插入用户信息
 
 				Taro.setStorageSync('userInfo', userInfo);
 
@@ -35,6 +34,7 @@ const Login: FC = () => {
 					icon: 'none',
 					mask: true
 				});
+				Taro.clearStorage();
 				console.log(err);
 			});
 	};
