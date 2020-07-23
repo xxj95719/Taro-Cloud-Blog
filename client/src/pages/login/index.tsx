@@ -1,11 +1,12 @@
-import Taro, { FC } from '@tarojs/taro';
+import Taro, { FC, useEffect } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
 import './index.scss';
 
-import { dbAdd } from '@/utils/CRUD';
-
 const Login: FC = () => {
+	useEffect(() => {
+		Taro.clearStorageSync();
+	}, []);
 	const onLogin = async (info) => {
 		Taro.showLoading({
 			title: '加载中'
@@ -34,7 +35,7 @@ const Login: FC = () => {
 					icon: 'none',
 					mask: true
 				});
-				Taro.clearStorage();
+				Taro.clearStorageSync();
 				console.log(err);
 			});
 	};

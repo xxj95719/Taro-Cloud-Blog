@@ -23,7 +23,8 @@ let list = [
 			prefixClass: 'icon',
 			value: 'start'
 		},
-		linkUrl: `/pages/list/index?title=收藏集`
+		linkUrl: `/pages/list/index?title=收藏集`,
+		needLogin: true
 	},
 	{
 		title: '阅读过的文章',
@@ -33,7 +34,8 @@ let list = [
 			prefixClass: 'icon',
 			value: 'eye'
 		},
-		linkUrl: `/pages/list/index?title=阅读过的文章`
+		linkUrl: `/pages/list/index?title=阅读过的文章`,
+		needLogin: false
 	}
 ];
 const Member: FC = () => {
@@ -53,7 +55,8 @@ const Member: FC = () => {
 							prefixClass: 'icon',
 							value: 'markdown'
 						},
-						linkUrl: `/pages/addOrEdit/index?title=写博客`
+						linkUrl: `/pages/addOrEdit/index?title=写博客`,
+						needLogin: true
 					});
 				}
 			}
