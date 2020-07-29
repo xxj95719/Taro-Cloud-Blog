@@ -93,7 +93,7 @@ const BlogDetail: FC = () => {
 					(await dbGet({
 						collection: 'collect_records',
 						skip: 0,
-						where: { _openid: userInfo.openId, articleId: detail._id }
+						where: { _openid: userInfo.openid, articleId: detail._id }
 					})) || [];
 				setIsAlreadyCollect(Boolean(list.length));
 			}
@@ -123,7 +123,7 @@ const BlogDetail: FC = () => {
 
 				dbDelete({
 					collection: 'collect_records',
-					where: { _openid: userInfo.openId, articleId: detail._id }
+					where: { _openid: userInfo.openid, articleId: detail._id }
 				});
 				Taro.showToast({
 					title: '取消成功',
@@ -150,7 +150,7 @@ const BlogDetail: FC = () => {
 					{`${filters.formateDate(detail.updateTime, '-')}`}
 					<View className='at-article__name'>🐔哥</View>
 				</View>
-				{userInfo.openId === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM' && (
+				{userInfo.openid === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM' && (
 					<AtButton type='primary' onClick={onGotoEdit.bind(this, detail._id)}>
 						编辑
 					</AtButton>
