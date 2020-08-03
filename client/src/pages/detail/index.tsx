@@ -137,7 +137,6 @@ const BlogDetail: FC = () => {
 	};
 
 	const onGotoEdit = (_id) => {
-		this.$preload('_id', _id);
 		Taro.navigateTo({
 			url: `/pages/addOrEdit/index?title=更新博客&_id=${_id}`
 		});
