@@ -1,4 +1,4 @@
-import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useScope, useDidShow, useDidHide } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
 import { AtLoadMore } from 'taro-ui';
 import './index.scss';
@@ -50,9 +50,20 @@ const List: FC = () => {
 		}
 	}, []);
 
+	useDidShow(() => {
+		getArticleList();
+	});
+
+	useDidHide(() => {
+		// reset
+		setSkip(0);
+		setStatus('more');
+		setArticleList([]);
+	});
+
 	useEffect(
 		() => {
-			getArticleList();
+			if (skip > 0) getArticleList();
 		},
 		[ skip ]
 	);
