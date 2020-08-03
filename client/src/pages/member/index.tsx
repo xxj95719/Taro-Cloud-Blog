@@ -46,7 +46,7 @@ const Member: FC = () => {
 			const userInfo = await Taro.getStorageSync('userInfo');
 			if (userInfo) {
 				setUserInfo(userInfo);
-				if (userInfo.openid === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM') {
+				if (!list.find((item) => item.title === '写博客') && userInfo.openid === 'odRoE0Z_qNd_GMH-Z4O_Awr1E3GM') {
 					list.push({
 						title: '写博客',
 						iconInfo: {
