@@ -80,9 +80,9 @@ const AddOrEdit: FC = () => {
   };
 
   const onSubmit = async () => {
-    if (!title || !markdownValue || !desc) {
+    if (!title || !markdownValue) {
       Taro.showToast({
-        title: !title ? '标题不能为空' : !desc ? '描述不能为空' : !markdownValue ? '内容不能为空' : '必填项不能为空',
+        title: !title ? '标题不能为空' : !markdownValue ? '内容不能为空' : '必填项不能为空',
         icon: 'none'
       });
     } else {

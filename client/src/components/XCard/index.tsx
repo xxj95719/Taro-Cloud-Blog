@@ -50,7 +50,7 @@ const XCard: FC<Props> = ({ item, isHome, onGoToDetail }) => {
 					<View>
 						<Text className='x-cart-box--title'>{item.title}</Text>
 					</View>
-					{isHome && (
+					{isHome && item.desc && (
 						<View>
 							<Text className='x-cart-box--desc'>{item.desc}</Text>
 						</View>
@@ -63,7 +63,7 @@ const XCard: FC<Props> = ({ item, isHome, onGoToDetail }) => {
 						</View>
 					)}
 				</View>
-				<Image src={typeImgMap[item.sortType]} className='x-cart-box--img' mode='widthFix' />
+				{typeImgMap[item.sortType] && <Image src={typeImgMap[item.sortType]} className='x-cart-box--img' mode='widthFix' />}
 			</View>
 		</View>
 	);

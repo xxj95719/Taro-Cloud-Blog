@@ -173,8 +173,7 @@ const BlogDetail: FC = () => {
 				<Text className='at-fab__icon  sava-btn__text'>{isAlreadyCollect ? '取消收藏' : '收藏'}</Text>
 			</AtFab>
 			<View className='at-article__content'>
-				<Image className='at-article__img' src={typeImgMap[detail.sortType]} mode='widthFix' />
-
+				{typeImgMap[detail.sortType] && <Image className='at-article__img' src={typeImgMap[detail.sortType]} mode='widthFix' />}
 				<View className='at-article__section'>
 					<View className='at-article__p'>
 						<TaroParser type='markdown' theme='light' content={detail.content} />
