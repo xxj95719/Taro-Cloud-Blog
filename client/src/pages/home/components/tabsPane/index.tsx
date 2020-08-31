@@ -1,5 +1,4 @@
 import Taro, { FC, useState, useEffect } from '@tarojs/taro';
-import { View } from '@tarojs/components';
 import { AtTabs, AtTabsPane } from 'taro-ui';
 import './index.scss';
 
@@ -16,9 +15,9 @@ interface Props {
 }
 
 const TabsPane: FC<Props> = ({ tabList, onClickTabsPane }) => {
-	const [ current, setCurrent ] = useState<number>();
+	const [current, setCurrent] = useState<number>();
 
-	const [ mapTabList, setMapTabList ] = useState<SortType[]>();
+	const [mapTabList, setMapTabList] = useState<SortType[]>();
 
 	useEffect(
 		() => {
@@ -35,7 +34,7 @@ const TabsPane: FC<Props> = ({ tabList, onClickTabsPane }) => {
 			});
 			setMapTabList(mapTabList);
 		},
-		[ mapTabList ]
+		[mapTabList]
 	);
 
 	const handleClick = async (value) => {
@@ -60,6 +59,6 @@ TabsPane.defaultProps = {
 			sortTypeName: ''
 		}
 	],
-	onClickTabsPane: () => {}
+	onClickTabsPane: () => { }
 };
 export default TabsPane;

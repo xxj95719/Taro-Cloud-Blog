@@ -1,4 +1,12 @@
+.scrolltab {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
 .scrollview {
   min-height: 100vh;
+  padding-top: 100px;
   background-color: $gray;
 }

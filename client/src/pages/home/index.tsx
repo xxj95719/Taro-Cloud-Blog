@@ -1,5 +1,5 @@
 import Taro, { FC, useState, useEffect, useShareAppMessage, useReachBottom } from '@tarojs/taro';
-import { ScrollView } from '@tarojs/components';
+import { ScrollView, View } from '@tarojs/components';
 import { AtLoadMore } from 'taro-ui';
 import './index.scss';
 
@@ -90,7 +90,6 @@ const Home: FC = () => {
 				sortType
 			}
 		});
-		Taro.hideLoading();
 		setIsFetchDone(true);
 
 		let mapData = data as ArticleList;
@@ -115,6 +114,7 @@ const Home: FC = () => {
 			mapData = articleList.concat(mapData);
 			setArticleList(mapData);
 		}
+		Taro.hideLoading();
 	};
 
 	const getArticleSortTypeList = async () => {
@@ -144,17 +144,22 @@ const Home: FC = () => {
 		console.log('useReachBottom')
 	})
 	return (
-		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring >
-			<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
+		<View>
+			<View className='scrolltab'>
+				<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
+			</View>
 
-			{articleList.length &&
-				articleList.map((item) => (
-					<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
-				))}
-			{articleList.length >= 10 && <AtLoadMore status={status} />}
+			<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring >
 
-			{!articleList.length && isFetchDone && <XEmpty />}
-		</ScrollView>
+				{articleList.length &&
+					articleList.map((item) => (
+						<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
+					))}
+				{articleList.length >= 10 && <AtLoadMore status={status} />}
+
+				{!articleList.length && isFetchDone && <XEmpty />}
+			</ScrollView>
+		</View>
 	);
 };
 
