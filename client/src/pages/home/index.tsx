@@ -1,4 +1,4 @@
-import Taro, { FC, useState, useEffect, useShareAppMessage } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useShareAppMessage, useReachBottom } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
 import { AtLoadMore } from 'taro-ui';
 import './index.scss';
@@ -41,7 +41,7 @@ const Home: FC = () => {
 
 	const [sortTypeList, setSortTypeList] = useState<any>([]); // 标签分类
 
-	const [status, setStatus] = useState<string>('more'); // 状态
+	const [status, setStatus] = useState<string>(''); // 状态
 
 	useShareAppMessage(() => {
 		return {
@@ -107,9 +107,7 @@ const Home: FC = () => {
 
 			return item;
 		});
-		if (mapData.length === 10) {
-			setStatus('more');
-		} else {
+		if (mapData.length < 10) {
 			setStatus('noMore');
 		}
 
@@ -131,11 +129,6 @@ const Home: FC = () => {
 		setSortType(!sortType ? undefined : sortType);
 		setSkip(0);
 		setArticleList([]);
-		setStatus('more');
-	};
-	const onClickLoadMore = async () => {
-		setStatus('loading');
-		setSkip(articleList.length || 0);
 	};
 
 	const onGoToDetail = (item) => {
@@ -143,16 +136,22 @@ const Home: FC = () => {
 			url: `/pages/detail/index?_id=${item._id}`
 		});
 	};
-	console.log('articleList.length', articleList.length)
+
+	useReachBottom(() => {
+		if (status === 'noMore') return;
+		setStatus('loading')
+		setSkip(articleList.length || 0);
+		console.log('useReachBottom')
+	})
 	return (
-		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
+		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring >
 			<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
 
 			{articleList.length &&
 				articleList.map((item) => (
 					<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
 				))}
-			{articleList.length >= 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
+			{articleList.length >= 10 && <AtLoadMore status={status} />}
 
 			{!articleList.length && isFetchDone && <XEmpty />}
 		</ScrollView>
