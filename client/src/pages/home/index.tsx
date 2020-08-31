@@ -29,19 +29,19 @@ interface SortTypeList {
 }
 
 const Home: FC = () => {
-	const [ isFetchDone, setIsFetchDone ] = useState<boolean>(false);
+	const [isFetchDone, setIsFetchDone] = useState<boolean>(false);
 
-	const [ isInit, setInit ] = useState<boolean>(true);
+	const [isInit, setInit] = useState<boolean>(true);
 
-	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
+	const [skip, setSkip] = useState<number>(0); // 数据位置标识
 
-	const [ sortType, setSortType ] = useState<number | undefined>(); // 数据位置标识
+	const [sortType, setSortType] = useState<number | undefined>(); // 数据位置标识
 
-	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
+	const [articleList, setArticleList] = useState<ArticleList>([]); // 博客列表
 
-	const [ sortTypeList, setSortTypeList ] = useState<any>([]); // 标签分类
+	const [sortTypeList, setSortTypeList] = useState<any>([]); // 标签分类
 
-	const [ status, setStatus ] = useState<string>('more'); // 状态
+	const [status, setStatus] = useState<string>('more'); // 状态
 
 	useShareAppMessage(() => {
 		return {
@@ -54,7 +54,7 @@ const Home: FC = () => {
 		() => {
 			getArticleList();
 		},
-		[ skip ]
+		[skip]
 	);
 
 	useEffect(
@@ -65,7 +65,7 @@ const Home: FC = () => {
 				getArticleList();
 			}
 		},
-		[ sortType ]
+		[sortType]
 	);
 
 	const getArticleList = async () => {
@@ -107,17 +107,16 @@ const Home: FC = () => {
 
 			return item;
 		});
-		if (mapData.length) {
+		if (mapData.length === 10) {
 			setStatus('more');
-
-			mapData = articleList.concat(mapData);
 		} else {
 			setStatus('noMore');
-
-			mapData = articleList;
 		}
 
-		setArticleList(mapData);
+		if (mapData.length) {
+			mapData = articleList.concat(mapData);
+			setArticleList(mapData);
+		}
 	};
 
 	const getArticleSortTypeList = async () => {
@@ -144,7 +143,7 @@ const Home: FC = () => {
 			url: `/pages/detail/index?_id=${item._id}`
 		});
 	};
-
+	console.log('articleList.length', articleList.length)
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
 			<TabsPane tabList={sortTypeList} onClickTabsPane={onClickTabsPane} />
@@ -153,7 +152,7 @@ const Home: FC = () => {
 				articleList.map((item) => (
 					<XCard item={item} key={item._id} onGoToDetail={onGoToDetail.bind(this, item)} />
 				))}
-			{articleList.length > 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
+			{articleList.length >= 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
 
 			{!articleList.length && isFetchDone && <XEmpty />}
 		</ScrollView>

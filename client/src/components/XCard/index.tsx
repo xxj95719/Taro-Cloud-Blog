@@ -2,11 +2,16 @@ import Taro, { FC, memo } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import filters from '@/utils/filters';
 import './index.scss';
+import jsimg from '../../assets/img/type/js.jpg';
+import vueimg from '../../assets/img/type/vue.png';
+import reactimg from '../../assets/img/type/react.png';
+import webpackimg from '../../assets/img/type/webpack.jpg';
+import webimg from '../../assets/img/type/web.png';
+
 type Props = {
 	item: {
 		title: string;
 		desc: string;
-		fileID: string;
 		sortType: number;
 		sortTypeName?: string;
 		creatTime: Date;
@@ -15,6 +20,15 @@ type Props = {
 	isHome?: boolean;
 	onGoToDetail: any;
 };
+
+const typeImgMap = {
+	1: jsimg,
+	2: vueimg,
+	3: reactimg,
+	4: reactimg,
+	5: webpackimg,
+	6: webimg,
+}
 const XCard: FC<Props> = ({ item, isHome, onGoToDetail }) => {
 	return (
 		<View className='x-cart' onClick={onGoToDetail}>
@@ -49,7 +63,7 @@ const XCard: FC<Props> = ({ item, isHome, onGoToDetail }) => {
 						</View>
 					)}
 				</View>
-				{item.fileID && <Image src={item.fileID} className='x-cart-box--img' mode='widthFix' />}
+				<Image src={typeImgMap[item.sortType]} className='x-cart-box--img' mode='widthFix' />
 			</View>
 		</View>
 	);
@@ -60,7 +74,6 @@ XCard.defaultProps = {
 	item: {
 		title: '',
 		desc: '',
-		fileID: '',
 		sortType: 0,
 		sortTypeName: '',
 		creatTime: new Date(),

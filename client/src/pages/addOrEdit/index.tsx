@@ -1,6 +1,6 @@
 import Taro, { FC, useState, useEffect, useScope } from '@tarojs/taro';
 import { View, Picker } from '@tarojs/components';
-import { AtForm, AtButton, AtTextarea, AtImagePicker, AtInput, AtList, AtListItem } from 'taro-ui';
+import { AtForm, AtButton, AtTextarea, AtInput, AtList, AtListItem } from 'taro-ui';
 
 import './index.scss';
 
@@ -15,26 +15,26 @@ const AddOrEdit: FC = () => {
 
   const [markdownValue, setMarkdownValue] = useState<string>('');
 
-  const [base64Url, setBase64Url] = useState<string>('');
-
-  const sortTypeList = Taro.getStorageSync('sortTypeList');
+  const [sortTypeList, setSortTypeList] = useState(Taro.getStorageSync('sortTypeList'));
 
   const [sortType, setSortType] = useState<number>(1);
-
-  const [files, setFiles] = useState<any>();
 
   const [sortTypeName, setSortTypeName] = useState<string>('JavaScript');
 
   const [isAdd, setIsAdd] = useState<boolean>(true);
-
-  const [fileID, setFileID] = useState<string>();
 
   useEffect(
     () => {
       Taro.setNavigationBarTitle({
         title: scope.options.title || 'BLOG'
       });
-
+      (async function () {
+        if (!sortTypeList) {
+          let res = await getArticleSortTypeList();
+          setSortTypeList(res);
+          Taro.setStorageSync('sortTypeList', res);
+        }
+      })()
       if (scope.options._id) {
         setIsAdd(false);
         (async function () {
@@ -54,45 +54,29 @@ const AddOrEdit: FC = () => {
           setMarkdownValue(data[0].content);
           setSortType(data[0].sortType);
           setSortTypeName(sortTypeList[data[0].sortType - 1].sortTypeName);
-          setFileID(data[0].fileID);
-          setFiles([{ url: data[0].fileID }]);
         })();
-      } else {
-        setFiles([{ url: sortTypeList[0].fileID }]);
       }
     },
     [scope]
   );
 
+  const getArticleSortTypeList = async () => {
+    const data = await dbGet({
+      collection: 'article_sort_type',
+      skip: 0,
+      limit: 10
+    });
+    return data;
+  };
   const onChangeSelector = (e) => {
     let obj = sortTypeList[e.detail.value];
     if (obj) {
       setSortType(obj.sortType);
-      setFiles([{ url: obj.fileID }]);
       setSortTypeName(obj.sortTypeName);
     }
   };
   const handleChange = (value) => {
     setMarkdownValue(value);
-  };
-  const onChange = async (files) => {
-    setFileID('');
-
-    setFiles(files);
-    if (files.length && files[0].url) {
-      Taro.getFileSystemManager().readFile({
-        filePath: files[0].url, //选择图片返回的相对路径
-        encoding: 'base64', //编码格式
-        success: (res) => {
-          //成功的回调
-          if (res) {
-            let { data } = res as any;
-            setBase64Url(data);
-          }
-        },
-        fail: () => { }
-      });
-    }
   };
 
   const onSubmit = async () => {
@@ -102,22 +86,7 @@ const AddOrEdit: FC = () => {
         icon: 'none'
       });
     } else {
-      let uploadFilesRes;
       let dbRes;
-
-      if (!fileID) {
-        uploadFilesRes = (await Taro.cloud.callFunction({
-          name: 'uploadFiles',
-          data: {
-            url: base64Url || files[0].url
-          }
-        })) as any;
-        if (!uploadFilesRes.result)
-          Taro.showToast({
-            title: '图片上传失败',
-            icon: 'none'
-          });
-      }
 
       if (isAdd) {
         dbRes = await dbAdd({
@@ -127,7 +96,6 @@ const AddOrEdit: FC = () => {
             content: markdownValue,
             desc,
             sortType,
-            fileID: uploadFilesRes.result.fileID || '',
             creatTime: new Date(),
             updateTime: new Date()
           }
@@ -143,7 +111,6 @@ const AddOrEdit: FC = () => {
             content: markdownValue,
             desc,
             sortType,
-            fileID: fileID || uploadFilesRes.result.fileID || '',
             updateTime: new Date()
           }
         });
@@ -183,10 +150,6 @@ const AddOrEdit: FC = () => {
             <AtListItem title='请选择' extraText={sortTypeName} />
           </AtList>
         </Picker>
-      </View>
-      <View className='panel'>
-        <View className='panel__title'>图片</View>
-        <AtImagePicker files={files} onChange={onChange} />
       </View>
       <AtForm onSubmit={onSubmit} className='form__content'>
         <View className='panel'>

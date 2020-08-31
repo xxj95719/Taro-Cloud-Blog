@@ -4,10 +4,23 @@ import TaroParser from 'taro-parse';
 import { AtButton, AtFab } from 'taro-ui';
 import { isLogin } from '@/utils';
 import filters from '@/utils/filters';
-
+import { dbAdd, dbGet, dbDelete } from '@/utils/CRUD';
 import './index.scss';
 
-import { dbAdd, dbGet, dbDelete } from '@/utils/CRUD';
+import jsimg from '../../assets/img/type/js.jpg';
+import vueimg from '../../assets/img/type/vue.png';
+import reactimg from '../../assets/img/type/react.png';
+import webpackimg from '../../assets/img/type/webpack.jpg';
+import webimg from '../../assets/img/type/web.png';
+
+const typeImgMap = {
+	1: jsimg,
+	2: vueimg,
+	3: reactimg,
+	4: reactimg,
+	5: webpackimg,
+	6: webimg,
+}
 
 interface ArticleDetail {
 	_id: string;
@@ -16,7 +29,6 @@ interface ArticleDetail {
 	content: string;
 	sortType: number;
 	sortTypeName?: string;
-	fileID: string;
 	creatTime: Date;
 	updateTime: Date;
 }
@@ -28,11 +40,11 @@ interface UserInfo {
 const BlogDetail: FC = () => {
 	const scope = useScope();
 
-	const [ detail, setDetail ] = useState<ArticleDetail>();
+	const [detail, setDetail] = useState<ArticleDetail>();
 
-	const [ isAlreadyCollect, setIsAlreadyCollect ] = useState<boolean>(false);
+	const [isAlreadyCollect, setIsAlreadyCollect] = useState<boolean>(false);
 
-	const [ userInfo, setUserInfo ] = useState<UserInfo>({ openid: '' });
+	const [userInfo, setUserInfo] = useState<UserInfo>({ openid: '' });
 
 	useShareAppMessage(() => {
 		if (detail)
@@ -43,7 +55,7 @@ const BlogDetail: FC = () => {
 	});
 
 	useDidShow(() => {
-		(async function() {
+		(async function () {
 			const userInfo = await Taro.getStorageSync('userInfo');
 			if (userInfo) setUserInfo(userInfo);
 			if (scope) {
@@ -68,7 +80,7 @@ const BlogDetail: FC = () => {
 			getIsAlreadyCollect();
 			browseRecord(scope.options._id);
 		},
-		[ detail ]
+		[detail]
 	);
 
 	const browseRecord = async (articleId) => {
@@ -97,7 +109,7 @@ const BlogDetail: FC = () => {
 					})) || [];
 				setIsAlreadyCollect(Boolean(list.length));
 			}
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	/**
@@ -161,7 +173,7 @@ const BlogDetail: FC = () => {
 				<Text className='at-fab__icon  sava-btn__text'>{isAlreadyCollect ? '取消收藏' : '收藏'}</Text>
 			</AtFab>
 			<View className='at-article__content'>
-				<Image className='at-article__img' src={detail.fileID} mode='widthFix' />
+				<Image className='at-article__img' src={typeImgMap[detail.sortType]} mode='widthFix' />
 
 				<View className='at-article__section'>
 					<View className='at-article__p'>
