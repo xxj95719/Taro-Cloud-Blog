@@ -1,8 +1,9 @@
-import Taro, { FC, useState, useEffect } from '@tarojs/taro';
+import Taro, { FC } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { AtAvatar, AtIcon } from 'taro-ui';
 import { isLogin } from '@/utils';
 import './index.scss';
+import { ITouchEvent } from '@tarojs/components/types/common';
 
 // import { dbGet } from '@/utils/CRUD';
 interface Props {
@@ -10,18 +11,23 @@ interface Props {
 		avatarUrl: string;
 		nickName: string;
 	};
+	onDebug: (event: ITouchEvent) => any
 }
 
-const User: FC<Props> = ({ userInfo }) => {
+const User: FC<Props> = ({ userInfo, onDebug }) => {
+
 	const login = async () => {
 		let bool = await isLogin();
 		if (!bool) {
 			Taro.navigateTo({ url: `/pages/login/index` });
 		}
 	};
+
 	return (
 		<View className='user-box' onClick={login}>
-			<AtAvatar circle text='Blog' size='large' image={userInfo.avatarUrl} />
+			<View onClick={onDebug} >
+				<AtAvatar circle text='Blog' size='large' image={userInfo.avatarUrl} />
+			</View>
 			<Text className='user-box--text'>{userInfo.nickName}</Text>
 			<AtIcon prefixClass='icon' value='chevronright' size='20' color='#FFF' />
 		</View>

@@ -1,6 +1,5 @@
-import Taro, { FC, useState, useEffect, useScope, useDidShow, useDidHide } from '@tarojs/taro';
+import Taro, { FC, useState, useEffect, useScope, useDidShow, useDidHide, useReachBottom } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
-import { AtLoadMore } from 'taro-ui';
 import './index.scss';
 
 import XCard from '@/components/XCard/index';
@@ -32,13 +31,9 @@ interface SortTypeList {
 }
 
 const List: FC = () => {
-	const [ isFetchDone, setIsFetchDone ] = useState<boolean>(false);
+	const [isFetchDone, setIsFetchDone] = useState<boolean>(false);
 
-	const [ skip, setSkip ] = useState<number>(0); // 数据位置标识
-
-	const [ articleList, setArticleList ] = useState<ArticleList>([]); // 博客列表
-
-	const [ status, setStatus ] = useState<string>('more'); // 状态
+	const [articleList, setArticleList] = useState<ArticleList>([]); // 博客列表
 
 	const scope = useScope();
 
@@ -55,18 +50,9 @@ const List: FC = () => {
 	});
 
 	useDidHide(() => {
-		// reset
-		setSkip(0);
-		setStatus('more');
 		setArticleList([]);
 	});
 
-	useEffect(
-		() => {
-			if (skip > 0) getArticleList();
-		},
-		[ skip ]
-	);
 	// 联表查询(收藏集/浏览记录)
 	const getArticleList = async () => {
 		Taro.showLoading({
@@ -80,7 +66,6 @@ const List: FC = () => {
 		const { result } = (await Taro.cloud.callFunction({
 			name: scope.options.title === '收藏集' ? 'getCollectArtList' : 'getBrowseArtList'
 		})) as any;
-		Taro.hideLoading();
 		setIsFetchDone(true);
 		if (result && result.list.length) {
 			let mapData = result.list.map((item) => {
@@ -98,33 +83,18 @@ const List: FC = () => {
 				});
 				return item;
 			});
-
-			if (mapData.length) {
-				setStatus('more');
-
-				mapData = articleList.concat(mapData);
-			} else {
-				setStatus('noMore');
-
-				mapData = articleList;
-			}
-
 			setArticleList(mapData);
+			Taro.hideLoading();
 		}
 	};
 
 	const getArticleSortTypeList = async () => {
 		const data = await dbGet({
 			collection: 'article_sort_type',
-			skip,
+			skip: 0,
 			limit: 10
 		});
 		return data as Array<SortTypeList>;
-	};
-
-	const onClickLoadMore = async () => {
-		setStatus('loading');
-		setSkip(articleList.length || 0);
 	};
 
 	const onGoToDetail = (item) => {
@@ -132,6 +102,7 @@ const List: FC = () => {
 			url: `/pages/detail/index?_id=${item.articleId}`
 		});
 	};
+
 	if (!articleList.length && isFetchDone) return <XEmpty />;
 	return (
 		<ScrollView className='scrollview' scrollY enableBackToTop scrollAnchoring>
@@ -143,7 +114,6 @@ const List: FC = () => {
 					isHome={false}
 				/>
 			))}
-			{articleList.length > 10 && <AtLoadMore onClick={onClickLoadMore} status={status} />}
 		</ScrollView>
 	);
 };
