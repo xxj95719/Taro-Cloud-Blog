@@ -1,6 +1,7 @@
 .scrolltab {
   width: 100%;
   overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
   position: fixed;
   left: 0;
   top: 0;
