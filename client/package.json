@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "private": true,
   "description": "基于taro2开发的微信小程序云博客",
   "templateInfo": {
